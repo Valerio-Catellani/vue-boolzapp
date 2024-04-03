@@ -91,7 +91,10 @@
                 <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser[0].avatar"
                   alt="user profile picture">
               </div>
-              <h6 class="mb-0">{{activeUser[0].name}}</h6>
+              <div class="d-flex flex-column justify-content-center ">
+                <h6 class="mb-0">{{activeUser[0].name}}</h6>
+                <p class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle {{getLastMessageData(activeUser[0])}}</p>
+              </div>
             </div>
             <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
               <i class="fa-solid fa-magnifying-glass" role="button"></i>
@@ -122,15 +125,33 @@
                 <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
               </svg>
             </div>
-
-
           </div>
-          <div class="user-banner">invio messaggio</div>
+          <div class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
+            <div class="d-flex align-items-center justify-content-center w-10">
+              <i class="fa-regular fa-face-smile fs-5" role="button"></i>
+            </div>
+            <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
+              aria-label=".form-control-lg example">
+            <div class="d-flex align-items-center justify-content-center w-10">
+              <i class="fa-solid fa-microphone fs-5" role="button"></i>
+            </div>
+          </div>
         </div>
       </div>
 
     </div>
   </div>
+
+
+
+
+
+
+
+
+  </script>
+
+
 </body>
 
 

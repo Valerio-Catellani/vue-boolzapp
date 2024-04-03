@@ -21,7 +21,6 @@ createApp({
             return this.getContractedData(lastMessage.date)
         },
         getContractedData(stringDate) {
-            console.log(stringDate);
             if (stringDate) {
                 // Dividi la stringa in base allo spazio per ottenere la data e l'ora
                 const splitDate = stringDate.split(' ');
@@ -63,3 +62,4 @@ createApp({
         }
     }
 }).mount('#app')
+

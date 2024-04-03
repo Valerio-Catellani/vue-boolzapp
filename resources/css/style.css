@@ -40,6 +40,13 @@
     height: 50px
 }
 
+.w-80 {
+    width: 80%;
+}
+
+.w-10{
+    width: 10%;
+}
 .user-banner{
     height: 70px;
 }
