@@ -4,11 +4,18 @@
     --contacts-background-inactive: white;
     --contacts-background-hover: #f3f6f8;
     --contacts-background-active: #9c9c9d;
+    --notifications-background: #8EDAFC;
 }
-
 
 .hype-txt-grey {
     color: #9c9c9d;
+}
+
+.notifications-background {
+    background-color: var(--notifications-background);
+}
+.notifications-color{
+    color: var(--notifications-background);
 }
 
 
@@ -18,9 +25,17 @@
     width: 100%;
     background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
 }
+
+
 #left-col {
     min-width: 300px;
 }
+
+#left-col .bell-container{
+    width: 50px;
+    height: 50px
+}
+
 .user-banner{
     height: 70px;
 }
