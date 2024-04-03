@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" /> <!-- Link a Font Awesome-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <!--Link bootstrap-->
+  <link rel="stylesheet" href="resources/css/style.css">
+  <link rel="stylesheet" href="resources/css/animation.css">
+  <link rel="stylesheet" href="resources/css/media-query.css">
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <script src="resources/js/script.js" type="module"></script>
+  <title>Buzzap</title>
+</head>
+
+<body>
+  <div id="app" class="py-5">
+    <div class="container-xxl h-100 overflow-hidden">
+
+      <div class="row h-100 flex-nowrap">
+        <div id="left-col" class="col-4 bg-danger-subtle h-100 px-0">
+          <div class="user-banner bg-success-subtle">dati contatto</div>
+          <div class="user-banner bg-primary-subtle">notifiche</div>
+          <div id="search-bar" class="bg-white">barra di ricerca</div>
+          <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle">
+            <div
+              class="user-contact d-flex justify-content-between align-items-center border-bottom border-dark-subtle py-2"
+              v-for="user in contacts" :key="user.id">
+              <div class="container-fluid h-100">
+                <div class="row h-100">
+                  <div class="user-img col-3 h-100 d-flex align-items-center justify-content-center">
+                    <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
+                      :alt="'avatar_'+user.id">
+                  </div>
+                  <div class="user-msg col-6 h-100">
+                    <h6 class="user-name mb-0">{{user.name}}</h6>
+                    <span class="user-msg-text hype-txt-grey">
+                      <i class="fa-solid fa-check-double"
+                        v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
+                      {{getLastMessage(user)}}
+                    </span>
+                  </div>
+                  <div class="user-date col-3 h-100 d-flex justify-content-end">
+                    <span class="hype-txt-grey small">{{getLastMessageData(user)}}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+        <div class="col-8 bg-success-subtle h-100 px-0 border-dark-subtle border-start">
+          <div class="user-banner">dati contatto</div>
+          <div id="chat" class="bg-primary-subtle overflow-y-auto">Lorem ipsum dolor sit, amet consectetur adipisicing
+            elit. Autem voluptatem velit delectus voluptates. Quae quo quam reprehenderit nisi dolorem incidunt,
+            doloribus consequatur suscipit amet id autem quis accusamus rem perferendis numquam eius ab similique,
+            mollitia culpa! Quo soluta, quos nulla labore amet id quae quas? Consequuntur labore ab, culpa sunt fuga
+            corrupti soluta voluptas quae delectus sint laborum non quam cupiditate nesciunt ipsam omnis aperiam
+            possimus earum quibusdam ratione nobis dignissimos totam numquam? Nobis quos enim harum, ad repellat animi
+            vel placeat. Ipsa quo totam ducimus harum libero repellat similique alias. Amet sapiente consequuntur
+            aspernatur cumque numquam alias facilis nobis autem corrupti hic architecto suscipit voluptatem eaque quas
+            maxime delectus, id reiciendis a molestias fuga! Illo, adipisci eos quas reiciendis tenetur alias. Dolorem
+            velit dolor incidunt beatae necessitatibus provident minima cum molestias. Labore, cum quae. Ipsam molestiae
+            obcaecati nesciunt blanditiis odit inventore accusantium cumque vitae explicabo, quidem porro corporis totam
+            iusto perferendis. Optio provident aspernatur sapiente eum ab ullam, eveniet adipisci ex odit eius mollitia
+            vero possimus similique quas perferendis sunt molestiae, recusandae illum exercitationem delectus
+            voluptatum. Quaerat nobis iusto libero, aliquam laborum dolorem odio, at deleniti quibusdam voluptatem
+            culpa, ab nam laboriosam quo quod quisquam in sed explicabo beatae! Voluptate sit dignissimos minima
+            provident libero aliquid eligendi hic molestiae distinctio debitis excepturi nam, labore similique,
+            necessitatibus nisi, quas laboriosam recusandae temporibus quae. Quasi tempore aliquam facilis odit commodi,
+            facere nemo aut itaque illum libero aspernatur id consequuntur eius earum distinctio blanditiis tempora.
+            Voluptas non fuga dolore placeat tempora, voluptates consectetur sapiente ea hic ipsum neque saepe esse
+            temporibus iusto. Labore perferendis sequi cumque provident sit officiis doloribus eveniet modi, magnam
+            incidunt nisi quos minima cupiditate quasi consectetur corrupti voluptatem sint eaque error, atque accusamus
+            mollitia. Officiis voluptatem obcaecati laboriosam tempora totam a harum culpa sit modi qui quo inventore
+            consequatur possimus quibusdam enim voluptatibus, illo rem aliquam aperiam velit quae nostrum doloremque
+            libero? Ex corporis, doloremque at laboriosam minima ipsa tempora modi odio tenetur cumque totam rerum
+            accusantium asperiores in accusamus exercitationem ipsam. Neque ipsam, culpa excepturi perferendis animi,
+            aliquid velit, at quo consequuntur amet non dicta dolores vel! Earum aut mollitia, rerum deleniti dolorum
+            voluptatem, odit, aspernatur corrupti voluptatibus dignissimos expedita hic ipsam quam recusandae voluptatum
+            iste quisquam officia neque. Natus consequuntur, maiores iusto, sint qui sit dolorum molestiae illo beatae
+            magnam laboriosam perferendis consectetur pariatur et odio molestias eveniet incidunt ad cum ipsum nemo
+            impedit doloremque earum. Cum voluptatum porro ipsum a cupiditate rem molestias delectus ipsam dolorem,
+            eveniet consequatur? Eos ipsum ut illo adipisci consequatur optio placeat! Et optio maiores quasi quae
+            tempora vel maxime praesentium non impedit quaerat enim reprehenderit blanditiis dolore, odio saepe. Dicta
+            laboriosam corporis asperiores repellat saepe voluptatum et est iste modi, vitae quidem deleniti consectetur
+            aut! Labore ipsam ut molestias deserunt dolorem harum perferendis saepe accusamus, illum necessitatibus
+            nulla voluptates nemo voluptatem officiis nostrum tenetur cum eos amet. Sapiente laboriosam nulla nam eaque
+            illo ut saepe a iste provident cum alias non unde vitae est ipsum, vero quos doloribus velit beatae cumque
+            dolor, minus ipsam praesentium. Mollitia vitae fugit sequi recusandae! Animi minima voluptate aliquam ipsum
+            veritatis, fuga id est dolorem a sit suscipit illo. Aspernatur blanditiis doloribus autem ducimus alias,
+            animi beatae dolorum at aperiam iure iusto delectus porro esse laborum quo! Suscipit necessitatibus
+            consequuntur officia impedit. Odio quas delectus, nobis illo reiciendis expedita saepe doloribus molestias
+            fuga iure, quod pariatur maxime hic numquam sint velit. Est accusantium labore, suscipit sapiente molestias
+            accusamus sunt provident ex earum blanditiis quae modi neque quisquam odit consequuntur doloribus facilis
+            exercitationem sed fugiat? Voluptatum eius hic deserunt voluptatibus, asperiores soluta voluptates mollitia
+            praesentium explicabo fuga ad architecto laboriosam, quam magnam alias, quaerat sapiente! Quidem vero eos
+            autem consequatur? Hic dolorum, eos nemo perferendis harum itaque nobis laboriosam corrupti consectetur
+            deleniti adipisci repellendus voluptates alias esse distinctio deserunt laudantium. Aliquam tempore debitis
+            ut repellendus corporis illo. Dolor eos commodi dolores soluta optio nobis odio adipisci dicta praesentium
+            magnam deleniti sunt voluptas, eligendi voluptates! Saepe architecto animi minima eligendi, quos veniam quis
+            cum, fugit, modi eaque placeat fugiat aliquam omnis ratione eveniet quas hic consectetur! Vero, placeat
+            distinctio veritatis quos suscipit repudiandae ut necessitatibus quaerat. Impedit voluptas repellat dicta
+            error accusamus asperiores at repellendus explicabo, suscipit ab quis tempore quasi aut illum fugit aliquid
+            beatae ullam veniam quam ipsam? Impedit, officiis aliquid aut ipsum unde perferendis. Cum dolore at dolor
+            ratione consequatur eos ipsum enim, omnis doloremque porro saepe maxime quos rerum culpa, incidunt non quas
+            consectetur ducimus? Similique deleniti veniam quia! Recusandae, quos commodi. Dignissimos sit molestias
+            doloribus saepe ducimus. Itaque tempora quam similique maiores architecto officiis animi rerum sed ipsam
+            voluptates eligendi dolore quas dolorum quaerat soluta ea, voluptas cum nemo temporibus blanditiis! Minima
+            voluptate repellat assumenda, architecto eum iste quasi delectus aliquid harum provident, adipisci quisquam
+            necessitatibus quaerat maxime itaque deserunt sed eius vitae sint, ab ipsam labore. Vitae fugit autem quasi
+            nemo ullam, odit, accusantium consequuntur adipisci accusamus dolor quisquam eligendi eum facere! Optio
+            explicabo quia natus porro rerum eligendi autem possimus, dicta laboriosam a, doloremque culpa praesentium
+            velit alias quidem, commodi aliquam. Quis minima accusamus magni iure delectus facere, ipsa earum maxime.
+            Obcaecati, aspernatur. Perferendis quidem accusantium voluptatibus reiciendis exercitationem ipsa molestiae
+            impedit corporis recusandae, commodi, aperiam unde molestias asperiores saepe ab modi culpa sed veniam
+            mollitia natus laborum voluptatem reprehenderit rerum magnam! Ipsum asperiores quod ullam quidem vitae
+            beatae necessitatibus quos quibusdam, laudantium modi mollitia, earum libero esse, at debitis recusandae
+            porro corporis reprehenderit! Aspernatur ratione magni hic necessitatibus non libero voluptatum qui, vel
+            excepturi, itaque, laboriosam quia. Quibusdam officia consectetur pariatur ipsam excepturi? Voluptate cum
+            ullam iusto quam vero animi ut amet consequuntur commodi libero dignissimos modi atque voluptatem doloremque
+            quia culpa error sit ipsa, unde iste, eaque officia? Veniam officiis eveniet magnam, iste minima amet
+            asperiores vel dolorem eum beatae autem, natus delectus magni recusandae, fugit unde explicabo voluptate sed
+            totam? Soluta, tempore ullam modi inventore sequi esse officia aperiam cum obcaecati blanditiis laborum
+            maxime magni porro quam alias libero, aspernatur dolore fuga, repudiandae similique enim ab? Provident.
+          </div>
+          <div class="user-banner">invio messaggio</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
+
+
+</html>

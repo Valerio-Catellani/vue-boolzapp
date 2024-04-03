@@ -1,0 +1,53 @@
+
+
+:root {
+    --contacts-background-inactive: white;
+    --contacts-background-hover: #f3f6f8;
+    --contacts-background-active: #9c9c9d;
+}
+
+
+.hype-txt-grey {
+    color: #9c9c9d;
+}
+
+
+
+#app {
+    height: 100vh;
+    width: 100%;
+    background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
+}
+#left-col {
+    min-width: 300px;
+}
+.user-banner{
+    height: 70px;
+}
+
+#chat{
+    height: calc(100% - 140px);
+}
+
+#search-bar{
+    height: 55px;
+}
+
+#contacts {
+    height: calc(100% - 195px);
+}
+
+.user-contact {
+    height: 90px;
+    background-color: var(--contacts-background-inactive);
+    min-width: 300px;
+}
+
+.user-img img {
+    width: 85%;
+}
+
+.user-contact:hover {
+    background-color: var(--contacts-background-hover);
+    cursor: pointer;
+}
