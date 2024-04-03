@@ -174,5 +174,18 @@ export const user = {
     name: 'Valerio',
     avatar: './img/Valerio.jpg'
 }
-
+export const response = [
+    "sto bene! tu come stai?",
+    "non lo so",
+    "se riesco, volentieri",
+    "potrei riuscire",
+    "sono d'accordo",
+    "no!",
+    "si!",
+    "ora non ho tempo, scusa...",
+    "possiamo parlare più tardi?",
+    "ti richiamo appena posso, ora sto in riunione",
+    "credo di si",
+    "sto lavorando"
+]
 

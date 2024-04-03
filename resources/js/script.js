@@ -7,9 +7,10 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            contacts,
+            contacts: [...contacts],
             user,
             activeChat: 1,
+            userMessage: '',
         }
     },
     methods: {
@@ -46,6 +47,31 @@ createApp({
         },
         changeChat(id) {
             this.activeChat = id
+        },
+        sendMessage(user) {
+            const currentDate = new Date();
+            // Formattare la data
+            const formattedDate = `${('0' + (currentDate.getDate())).slice(-2)}/` +
+                `${('0' + (currentDate.getMonth() + 1)).slice(-2)}/` +
+                `${currentDate.getFullYear()}`;
+            // Formattare l'ora
+            const formattedTime = `${('0' + currentDate.getHours()).slice(-2)}:` +
+                `${('0' + currentDate.getMinutes()).slice(-2)}:` +
+                `${('0' + currentDate.getSeconds()).slice(-2)}`;
+            // Combinare la data e l'ora formattate
+            const formattedDateTime = `${formattedDate} ${formattedTime}`;
+            let newMessage = {
+                date: formattedDateTime,
+                message: this.userMessage,
+                status: 'sent'
+            };
+            user.messages.push(newMessage);
+            this.userMessage = '';
+            this.createResponse(user)
+        },
+        createResponse(user) {
+            user.visible = 'typing';
+
         }
 
 
@@ -55,11 +81,11 @@ createApp({
     },
     computed: {
         activeUser() {
-            let filteredUser = [...this.contacts].filter(el => {
+            let filteredUser = this.contacts.filter(el => {
                 return el.id === this.activeChat
             });
+            console.log(filteredUser[0]);
             return filteredUser
         }
     }
 }).mount('#app')
-

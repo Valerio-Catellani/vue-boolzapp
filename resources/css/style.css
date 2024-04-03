@@ -3,13 +3,18 @@
 :root {
     --contacts-background-inactive: white;
     --contacts-background-hover: #f3f6f8;
-    --contacts-background-active: #9c9c9d;
+    --contacts-background-active: #d9d9df;
     --notifications-background: #8EDAFC;
     --user-message: #D5F9BA;
+    --typing: rgb(50, 197, 50);
 }
 
 .hype-txt-grey {
     color: #9c9c9d;
+}
+
+.hype-txt-green {
+    color: var(--typing)
 }
 
 .notifications-background {
@@ -27,6 +32,7 @@
 .message-background-received {
     background-color: white;
 }
+
 
 /*APP*/
 #app {
@@ -63,6 +69,10 @@
 
 #contacts {
     height: calc(100% - 195px);
+}
+
+.active {
+    background-color: var(--contacts-background-active) !important;
 }
 
 .user-contact {

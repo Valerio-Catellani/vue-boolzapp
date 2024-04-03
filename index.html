@@ -63,7 +63,8 @@
           </div>
           <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
             <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
-              v-for="user in contacts" :key="user.id" @click="changeChat(user.id)">
+              v-for="user in contacts" :key="user.id" @click="changeChat(user.id)"
+              :class="activeChat === user.id ? 'active' : ''">
               <div class="contact-info d-flex align-items-center">
                 <div class="icon50x50 d-flex align-items-center justify-content-center">
                   <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
@@ -71,10 +72,13 @@
                 </div>
                 <div class="user-msg d-flex flex-column align-self-baseline ms-3">
                   <h6 class="user-name mb-0">{{user.name}}</h6>
-                  <span class="user-msg-text hype-txt-grey">
+                  <span v-if="user.visible===true" class="user-msg-text hype-txt-grey">
                     <i class="fa-solid fa-check-double"
                       v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
                     {{getLastMessage(user)}}
+                  </span>
+                  <span v-else-if="user.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
+                    <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
                   </span>
                 </div>
               </div>
@@ -93,7 +97,11 @@
               </div>
               <div class="d-flex flex-column justify-content-center ">
                 <h6 class="mb-0">{{activeUser[0].name}}</h6>
-                <p class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle {{getLastMessageData(activeUser[0])}}</p>
+                <p v-if="activeUser[0].visible===true" class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
+                  {{getLastMessageData(activeUser[0])}}</p>
+                <p v-else-if="activeUser[0].visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
+                  <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
+                </p>
               </div>
             </div>
             <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
@@ -102,9 +110,9 @@
               <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
             </div>
           </div>
-          <div id="chat" class="overflow-y-auto container-fluid d-flex flex-column">
+          <div id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
 
-            <div class="d-flex m-3" :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
+            <div class="d-flex m-2" :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
               v-for="element in activeUser[0].messages">
               <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
                 x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='received'">
@@ -115,8 +123,11 @@
               </svg>
               <div style=" max-width: 45%;" class="border-dark d-flex flex-column rounded-bottom-2 px-2 pt-2"
                 :class="['message-background-'+element.status, element.status==='sent'? 'rounded-start-2' : 'rounded-end-2']">
-                <span>{{element.message}}</span>
-                <span class="small hype-txt-grey text-end">{{getContractedData(element.date)}}</span>
+                <span>{{element.message}}
+                </span>
+                <span class="small hype-txt-grey text-end">{{getContractedData(element.date)}}
+                  <i class="fa-solid fa-check-double" v-if="element.status ==='sent'"></i>
+                </span>
               </div>
               <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
                 x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='sent'">
@@ -131,7 +142,7 @@
               <i class="fa-regular fa-face-smile fs-5" role="button"></i>
             </div>
             <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
-              aria-label=".form-control-lg example">
+              aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser[0])" v-model="userMessage">
             <div class="d-flex align-items-center justify-content-center w-10">
               <i class="fa-solid fa-microphone fs-5" role="button"></i>
             </div>
@@ -141,16 +152,6 @@
 
     </div>
   </div>
-
-
-
-
-
-
-
-
-  </script>
-
 
 </body>
 
