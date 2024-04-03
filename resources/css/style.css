@@ -17,6 +17,9 @@
 .notifications-color{
     color: var(--notifications-background);
 }
+.bar-background {
+    background-color: var(--contacts-background-hover);
+}
 
 
 
@@ -31,7 +34,7 @@
     min-width: 300px;
 }
 
-#left-col .bell-container{
+.icon50x50{
     width: 50px;
     height: 50px
 }
@@ -53,7 +56,7 @@
 }
 
 .user-contact {
-    height: 90px;
+    height: 70px;
     background-color: var(--contacts-background-inactive);
     min-width: 300px;
 }

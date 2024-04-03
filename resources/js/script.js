@@ -1,5 +1,5 @@
 
-import { contacts } from "./data.js";
+import { contacts, user } from "./data.js";
 
 
 const { createApp } = Vue;
@@ -8,6 +8,8 @@ createApp({
     data() {
         return {
             contacts,
+            user,
+            activeChat: 1,
         }
     },
     methods: {
@@ -39,6 +41,9 @@ createApp({
                 }
                 return compressedTxt
             }
+        },
+        changeChat(id) {
+            this.activeChat = id
         }
 
 
@@ -47,6 +52,11 @@ createApp({
         console.log(this.contacts);
     },
     computed: {
-
+        activeUser() {
+            let filteredUser = [...this.contacts].filter(el => {
+                return el.id === this.activeChat
+            });
+            return filteredUser
+        }
     }
 }).mount('#app')

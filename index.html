@@ -23,10 +23,25 @@
     <div class="container-xxl h-100 overflow-hidden">
 
       <div class="row h-100 flex-nowrap">
-        <div id="left-col" class="col-4 bg-danger-subtle h-100 px-0">
-          <div class="user-banner bg-success-subtle">dati contatto</div>
+        <div id="left-col" class="col-4 h-100 px-0">
+
+          <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
+            <div class="user-info d-flex align-items-center">
+              <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
+                <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
+                  alt="user profile picture">
+              </div>
+              <h6 class="mb-0">{{user.name}}</h6>
+            </div>
+            <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+              <i class="fa-solid fa-circle-notch" role="button"></i>
+              <i class="fa-solid fa-message" role="button"></i>
+              <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
+            </div>
+          </div>
+
           <div class="user-banner d-flex align-items-center p-3 notifications-background">
-            <div class="bell-container d-flex align-items-center justify-content-center bg-white rounded-circle">
+            <div class="icon50x50 d-flex align-items-center justify-content-center bg-white rounded-circle">
               <i class="fa-solid fa-bell-slash fs-5 notifications-color"></i>
             </div>
             <div class="d-flex flex-column justify-content-center ms-2">
@@ -35,7 +50,7 @@
             </div>
 
           </div>
-          <div id="search-bar" class="bg-white d-flex align-items-center justify-content-center p-3">
+          <div id="search-bar" class="bar-background  d-flex align-items-center justify-content-center p-3">
             <form class="d-flex w-100" role="search">
               <span
                 class="input-group-text rounded-end-0 border-end-0 bg-white w-25 d-flex align-items-center justify-content-center"
@@ -46,35 +61,46 @@
                 placeholder="Cerca o Inizia una nuova chat" aria-label="Search" aria-describedby="basic-addon1">
             </form>
           </div>
-          <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle">
-            <div
-              class="user-contact d-flex justify-content-between align-items-center border-bottom border-dark-subtle py-2"
-              v-for="user in contacts" :key="user.id">
-              <div class="container-fluid h-100">
-                <div class="row h-100">
-                  <div class="user-img col-3 h-100 d-flex align-items-center justify-content-center">
-                    <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
-                      :alt="'avatar_'+user.id">
-                  </div>
-                  <div class="user-msg col-6 h-100">
-                    <h6 class="user-name mb-0">{{user.name}}</h6>
-                    <span class="user-msg-text hype-txt-grey">
-                      <i class="fa-solid fa-check-double"
-                        v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
-                      {{getLastMessage(user)}}
-                    </span>
-                  </div>
-                  <div class="user-date col-3 h-100 d-flex justify-content-end">
-                    <span class="hype-txt-grey small">{{getLastMessageData(user)}}</span>
-                  </div>
+          <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
+            <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
+              v-for="user in contacts" :key="user.id" @click="changeChat(user.id)">
+              <div class="contact-info d-flex align-items-center">
+                <div class="icon50x50 d-flex align-items-center justify-content-center">
+                  <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
+                    :alt="'avatar_'+user.id">
                 </div>
+                <div class="user-msg d-flex flex-column align-self-baseline ms-3">
+                  <h6 class="user-name mb-0">{{user.name}}</h6>
+                  <span class="user-msg-text hype-txt-grey">
+                    <i class="fa-solid fa-check-double"
+                      v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
+                    {{getLastMessage(user)}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="user-date d-flex justify-content-end">
+                <span class="hype-txt-grey small">{{getLastMessageData(user)}}</span>
               </div>
             </div>
 
           </div>
         </div>
-        <div class="col-8 bg-success-subtle h-100 px-0 border-dark-subtle border-start">
-          <div class="user-banner">dati contatto</div>
+        <div id="right-col" class="col-8 bg-success-subtle h-100 px-0 border-dark-subtle border-start">
+          <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
+            <div class="user-info d-flex align-items-center">
+              <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
+                <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser[0].avatar"
+                  alt="user profile picture">
+              </div>
+              <h6 class="mb-0">{{activeUser[0].name}}</h6>
+            </div>
+            <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+              <i class="fa-solid fa-magnifying-glass" role="button"></i>
+              <i class="fa-solid fa-paperclip" role="button"></i>
+              <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
+            </div>
+          </div>
           <div id="chat" class="bg-primary-subtle overflow-y-auto">Lorem ipsum dolor sit, amet consectetur adipisicing
             elit. Autem voluptatem velit delectus voluptates. Quae quo quam reprehenderit nisi dolorem incidunt,
             doloribus consequatur suscipit amet id autem quis accusamus rem perferendis numquam eius ab similique,

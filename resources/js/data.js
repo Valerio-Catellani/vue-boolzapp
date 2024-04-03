@@ -169,3 +169,10 @@ export const contacts = [
         ],
     }
 ]
+export const user = {
+    id: 1,
+    name: 'Valerio',
+    avatar: './img/Valerio.jpg'
+}
+
+
