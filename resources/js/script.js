@@ -18,9 +18,13 @@ createApp({
                 return el.status === 'received'
             });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
             const lastMessage = sendMessages[sendMessages.length - 1] ?? "";
-            if (lastMessage) {
+            return this.getContractedData(lastMessage.date)
+        },
+        getContractedData(stringDate) {
+            console.log(stringDate);
+            if (stringDate) {
                 // Dividi la stringa in base allo spazio per ottenere la data e l'ora
-                const splitDate = lastMessage.date.split(' ');
+                const splitDate = stringDate.split(' ');
                 // Dividi l'ora in base ai due punti per ottenere ore e minuti separatamente
                 const hoursAndMinutes = splitDate[1].split(':');
                 // Ottieni ore e minuti
@@ -29,9 +33,8 @@ createApp({
                 // Formatta le ore e i minuti
                 return (hours + ':' + minutes)
             }
-
-
         },
+
         getLastMessage(user) {
             const lastMessage = user.messages[user.messages.length - 1];
             if (lastMessage) {

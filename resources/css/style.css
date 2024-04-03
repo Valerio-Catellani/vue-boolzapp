@@ -1,10 +1,11 @@
 
-
+/*COLORS*/
 :root {
     --contacts-background-inactive: white;
     --contacts-background-hover: #f3f6f8;
     --contacts-background-active: #9c9c9d;
     --notifications-background: #8EDAFC;
+    --user-message: #D5F9BA;
 }
 
 .hype-txt-grey {
@@ -20,18 +21,18 @@
 .bar-background {
     background-color: var(--contacts-background-hover);
 }
+.message-background-sent {
+    background-color: var(--user-message);
+}
+.message-background-received {
+    background-color: white;
+}
 
-
-
+/*APP*/
 #app {
     height: 100vh;
     width: 100%;
     background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
-}
-
-
-#left-col {
-    min-width: 300px;
 }
 
 .icon50x50{
@@ -43,9 +44,11 @@
     height: 70px;
 }
 
-#chat{
-    height: calc(100% - 140px);
+/*LEFT COLUMN*/
+#left-col {
+    min-width: 300px;
 }
+
 
 #search-bar{
     height: 55px;
@@ -68,4 +71,11 @@
 .user-contact:hover {
     background-color: var(--contacts-background-hover);
     cursor: pointer;
+}
+
+/*RIGHT COLUMN*/
+
+#chat{
+    height: calc(100% - 140px);
+    background-image: url("../img/mine.jpg");
 }
