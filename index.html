@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="resources/css/style.css">
   <link rel="stylesheet" href="resources/css/animation.css">
   <link rel="stylesheet" href="resources/css/media-query.css">
+  <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="resources/js/script.js" type="module"></script>
   <title>Buzzap</title>
@@ -20,138 +21,157 @@
 
 <body>
   <div id="app" class="py-5">
-    <div class="container-xxl h-100 overflow-hidden">
+    <div class="w-100 h-100" @click="this.messageMenuOpen = ''">
+      <div class="container-xxl h-100 overflow-hidden">
 
-      <div class="row h-100 flex-nowrap">
-        <div id="left-col" class="col-4 h-100 px-0">
+        <div class="row h-100 flex-nowrap">
+          <div id="left-col" class="col-4 h-100 px-0">
 
-          <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
-            <div class="user-info d-flex align-items-center">
-              <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
-                <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
-                  alt="user profile picture">
-              </div>
-              <h6 class="mb-0">{{user.name}}</h6>
-            </div>
-            <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
-              <i class="fa-solid fa-circle-notch" role="button"></i>
-              <i class="fa-solid fa-message" role="button"></i>
-              <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
-            </div>
-          </div>
-
-          <div class="user-banner d-flex align-items-center p-3 notifications-background">
-            <div class="icon50x50 d-flex align-items-center justify-content-center bg-white rounded-circle">
-              <i class="fa-solid fa-bell-slash fs-5 notifications-color"></i>
-            </div>
-            <div class="d-flex flex-column justify-content-center ms-2">
-              <h6 class="mb-0 small">Ricevi le notifiche di nuovi messaggi</h6>
-              <a class="mb-0 small text-decoration-underline hype-txt-grey" href="#">Attiva notifiche desktop</a>
-            </div>
-
-          </div>
-          <div id="search-bar" class="bar-background  d-flex align-items-center justify-content-center p-3">
-            <form class="d-flex w-100" role="search">
-              <span
-                class="input-group-text rounded-end-0 border-end-0 bg-white w-25 d-flex align-items-center justify-content-center"
-                id="basic-addon1">
-                <i class="fa-solid fa-magnifying-glass hype-txt-grey"></i>
-              </span>
-              <input type="Search" class="form-control me-2 rounded-start-0 hype-txt-grey small"
-                placeholder="Cerca o Inizia una nuova chat" aria-label="Search" aria-describedby="basic-addon1">
-            </form>
-          </div>
-          <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
-            <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
-              v-for="user in contacts" :key="user.id" @click="changeChat(user.id)"
-              :class="activeChat === user.id ? 'active' : ''">
-              <div class="contact-info d-flex align-items-center">
-                <div class="icon50x50 d-flex align-items-center justify-content-center">
-                  <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
-                    :alt="'avatar_'+user.id">
+            <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
+              <div class="user-info d-flex align-items-center">
+                <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
+                  <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+mainUser.avatar"
+                    alt="user profile picture">
                 </div>
-                <div class="user-msg d-flex flex-column align-self-baseline ms-3">
-                  <h6 class="user-name mb-0">{{user.name}}</h6>
-                  <span v-if="user.visible===true" class="user-msg-text hype-txt-grey">
-                    <i class="fa-solid fa-check-double"
-                      v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
-                    {{getLastMessage(user)}}
-                  </span>
-                  <span v-else-if="user.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
+                <h6 class="mb-0">{{mainUser.name}}</h6>
+              </div>
+              <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+                <i class="fa-solid fa-circle-notch" role="button"></i>
+                <i class="fa-solid fa-message" role="button"></i>
+                <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
+              </div>
+            </div>
+
+            <div class="user-banner d-flex align-items-center p-3 notifications-background">
+              <div class="icon50x50 d-flex align-items-center justify-content-center bg-white rounded-circle">
+                <i class="fa-solid fa-bell-slash fs-5 notifications-color"></i>
+              </div>
+              <div class="d-flex flex-column justify-content-center ms-2">
+                <h6 class="mb-0 small">Ricevi le notifiche di nuovi messaggi</h6>
+                <a class="mb-0 small text-decoration-underline hype-txt-grey" href="#">Attiva notifiche desktop</a>
+              </div>
+
+            </div>
+            <div id="search-bar" class="bar-background  d-flex align-items-center justify-content-center p-3">
+              <div class="d-flex w-100" role="search">
+                <span
+                  class="input-group-text rounded-end-0 border-end-0 bg-white w-25 d-flex align-items-center justify-content-center"
+                  id="basic-addon1">
+                  <i class="fa-solid fa-magnifying-glass hype-txt-grey"></i>
+                </span>
+                <input type="Search" class="form-control me-2 rounded-start-0 hype-txt-grey small"
+                  placeholder="Cerca o Inizia una nuova chat" aria-label="Search" aria-describedby="basic-addon1"
+                  v-model="userSearch">
+              </div>
+            </div>
+            <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
+              <div class="p-3 hype-txt-grey fst-italic" v-if="searchContacts.length < 1">Non ci sono contatti che
+                rispettano i parametri di ricerca</div>
+              <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
+                v-for="user in searchContacts" :key="user.id" @click="changeChat(user.id)"
+                :class="activeChat === user.id ? 'active' : ''">
+                <div class="contact-info d-flex align-items-center">
+                  <div class="icon50x50 d-flex align-items-center justify-content-center">
+                    <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+user.avatar"
+                      :alt="'avatar_'+user.id">
+                  </div>
+                  <div class="user-msg d-flex flex-column align-self-baseline ms-3">
+                    <h6 class="user-name mb-0">{{user.name}}</h6>
+                    <span v-if="user.visible===true || user.visible==='online'" class="user-msg-text hype-txt-grey">
+                      <i class="fa-solid fa-check-double"
+                        v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
+                      {{getLastMessage(user)}}
+                    </span>
+                    <span v-else-if="user.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
+                      <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
+                    </span>
+                  </div>
+                </div>
+                <div class="user-date d-flex justify-content-end">
+                  <span class="hype-txt-grey small">{{getLastMessageData(user)}}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start">
+            <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
+              <div class="user-info d-flex align-items-center">
+                <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
+                  <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser.avatar"
+                    alt="user profile picture">
+                </div>
+                <div class="d-flex flex-column justify-content-center ">
+                  <h6 class="mb-0">{{activeUser.name}}</h6>
+                  <p v-if="activeUser.visible===true" class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
+                    {{getLastMessageData(activeUser)}}</p>
+                  <p v-else-if="activeUser.visible==='online'" class="mb-0 small text-primary fw-bold ">Online
+                  </p>
+                  <p v-else-if="activeUser.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
                     <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
-                  </span>
+                  </p>
                 </div>
               </div>
-              <div class="user-date d-flex justify-content-end">
-                <span class="hype-txt-grey small">{{getLastMessageData(user)}}</span>
+              <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+                <i class="fa-solid fa-magnifying-glass" role="button"></i>
+                <i class="fa-solid fa-paperclip" role="button"></i>
+                <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
               </div>
             </div>
-          </div>
-        </div>
-        <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start">
-          <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
-            <div class="user-info d-flex align-items-center">
-              <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
-                <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser[0].avatar"
-                  alt="user profile picture">
+            <div id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
+              <div class="user-msg d-flex m-2"
+                :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
+                v-for="element in activeUser.messages">
+                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
+                  x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='received'">
+                  <title>tail-in</title>
+                  <path opacity="0.13" fill="#0000000"
+                    d="M1.533,3.568L8,12.193V1H2.812 C1.042,1,0.474,2.156,1.533,3.568z"></path>
+                  <path fill="white" d="M1.533,2.568L8,11.193V0L2.812,0C1.042,0,0.474,1.156,1.533,2.568z"></path>
+                </svg>
+                <div class="chat-box border-dark d-flex flex-column rounded-bottom-2 px-2 pt-2 position-relative"
+                  :class="['message-background-'+element.status, element.status==='sent'? 'rounded-start-2' : 'rounded-end-2']">
+                  <span class="">{{element.message}}
+                  </span>
+                  <div class="message-options position-absolute p-2" :class="'message-background-'+element.status"
+                    disabled></div>
+                  <i class="fa-solid fa-chevron-down position-absolute p-1" role="button"
+                    @click="openMenu(element)"></i>
+                  <ul class="dropdown-menu position-absolute"
+                    :class="[element.status==='sent'? 'menu-left' : 'menu-right', {'show': element===messageMenuOpen}]">
+                    <li class="dropdown-item" role="button">Informazioni messaggio</li>
+                    <li class="dropdown-item" role="button" @click="deleteMessage(element)">Cancella messaggio</li>
+                  </ul>
+                  <span class="small hype-txt-grey d-flex align-items-end justify-content-end">
+                    {{getContractedData(element.date)}}
+                    <i class="fa-solid fa-check-double pb-1 ps-1" v-if="element.status ==='sent'"
+                      :class="[changeColor(activeUser, element), {'text-primary': activeUser.visible !== true}]"></i>
+                  </span>
+                </div>
+                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
+                  x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='sent'">
+                  <title>tail-out</title>
+                  <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
+                  <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
+                </svg>
               </div>
-              <div class="d-flex flex-column justify-content-center ">
-                <h6 class="mb-0">{{activeUser[0].name}}</h6>
-                <p v-if="activeUser[0].visible===true" class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
-                  {{getLastMessageData(activeUser[0])}}</p>
-                <p v-else-if="activeUser[0].visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
-                  <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
-                </p>
+            </div>
+            <div
+              class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
+              <div class="d-flex align-items-center justify-content-center w-10">
+                <i class="fa-regular fa-face-smile fs-5" role="button"></i>
               </div>
-            </div>
-            <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
-              <i class="fa-solid fa-magnifying-glass" role="button"></i>
-              <i class="fa-solid fa-paperclip" role="button"></i>
-              <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
-            </div>
-          </div>
-          <div id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
-
-            <div class="d-flex m-2" :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
-              v-for="element in activeUser[0].messages">
-              <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
-                x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='received'">
-                <title>tail-in</title>
-                <path opacity="0.13" fill="#0000000"
-                  d="M1.533,3.568L8,12.193V1H2.812 C1.042,1,0.474,2.156,1.533,3.568z"></path>
-                <path fill="white" d="M1.533,2.568L8,11.193V0L2.812,0C1.042,0,0.474,1.156,1.533,2.568z"></path>
-              </svg>
-              <div style=" max-width: 45%;" class="border-dark d-flex flex-column rounded-bottom-2 px-2 pt-2"
-                :class="['message-background-'+element.status, element.status==='sent'? 'rounded-start-2' : 'rounded-end-2']">
-                <span>{{element.message}}
-                </span>
-                <span class="small hype-txt-grey text-end">{{getContractedData(element.date)}}
-                  <i class="fa-solid fa-check-double" v-if="element.status ==='sent'"></i>
-                </span>
+              <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
+                aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)" v-model="userMessage">
+              <div class="d-flex align-items-center justify-content-center w-10">
+                <i class="fa-solid fa-microphone fs-5" role="button"></i>
               </div>
-              <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
-                x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='sent'">
-                <title>tail-out</title>
-                <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
-                <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
-              </svg>
-            </div>
-          </div>
-          <div class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
-            <div class="d-flex align-items-center justify-content-center w-10">
-              <i class="fa-regular fa-face-smile fs-5" role="button"></i>
-            </div>
-            <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
-              aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser[0])" v-model="userMessage">
-            <div class="d-flex align-items-center justify-content-center w-10">
-              <i class="fa-solid fa-microphone fs-5" role="button"></i>
             </div>
           </div>
         </div>
       </div>
-
     </div>
   </div>
+
 
 </body>
 

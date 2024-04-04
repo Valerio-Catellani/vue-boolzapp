@@ -1,26 +1,28 @@
 
-import { contacts, user } from "./data.js";
+import { contacts, mainUser, response } from "./data.js";
 
 
 const { createApp } = Vue;
+const dateTime = luxon.DateTime;
 
 createApp({
     data() {
         return {
             contacts: [...contacts],
-            user,
+            mainUser,
             activeChat: 1,
             userMessage: '',
+            userSearch: '',
+            messageMenuOpen: '',
+
         }
     },
     methods: {
-        getLastMessageData(user) {
-            const sendMessages = user.messages.filter(el => {
-                return el.status === 'received'
-            });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
-            const lastMessage = sendMessages[sendMessages.length - 1] ?? "";
-            return this.getContractedData(lastMessage.date)
-        },
+        /**
+         * serve per indicare solo ora e minuti invece che la data completa
+         * @param {*} stringDate 
+         * @returns 
+         */
         getContractedData(stringDate) {
             if (stringDate) {
                 // Dividi la stringa in base allo spazio per ottenere la data e l'ora
@@ -34,7 +36,11 @@ createApp({
                 return (hours + ':' + minutes)
             }
         },
-
+        /**
+         * ottengo l'ultimo messagggio inviato o ricevuto dal contatto in modo da metterlo nella preview dei messafggi
+         * @param {*} user 
+         * @returns 
+         */
         getLastMessage(user) {
             const lastMessage = user.messages[user.messages.length - 1];
             if (lastMessage) {
@@ -45,47 +51,121 @@ createApp({
                 return compressedTxt
             }
         },
+        getLastMessageData(user) {
+            const sendMessages = user.messages.filter(el => {
+                return el.status === 'received'
+            });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
+            const lastMessage = sendMessages[sendMessages.length - 1] ?? "";
+            return this.getContractedData(lastMessage.date)
+        },
+        /**
+         * gestisce il cambio della chat a destra
+         * @param {*} id 
+         */
         changeChat(id) {
             this.activeChat = id
         },
+        /**
+         * Serve per andare a controllare e modificare i colori delle spunte. 
+         * @param {*} user 
+         * @param {*} element 
+         * @returns 
+         */
+        changeColor(user, element) {
+            let lastMessage = null;
+            for (let i = user.messages.length - 1; i >= 0; i--) {
+                if (user.messages[i].status === 'received') {
+                    lastMessage = user.messages[i];
+                    break
+                }
+            }
+            if (user.messages.indexOf(element) < user.messages.indexOf(lastMessage)) {
+                return 'text-primary'
+            } else {
+                return 'hype-txt-grey'
+            }
+
+        },
+        /**
+         * gestisco l'invio e la risposta dei messaggi
+         * @param {*} user 
+         */
         sendMessage(user) {
-            const currentDate = new Date();
-            // Formattare la data
-            const formattedDate = `${('0' + (currentDate.getDate())).slice(-2)}/` +
-                `${('0' + (currentDate.getMonth() + 1)).slice(-2)}/` +
-                `${currentDate.getFullYear()}`;
-            // Formattare l'ora
-            const formattedTime = `${('0' + currentDate.getHours()).slice(-2)}:` +
-                `${('0' + currentDate.getMinutes()).slice(-2)}:` +
-                `${('0' + currentDate.getSeconds()).slice(-2)}`;
-            // Combinare la data e l'ora formattate
-            const formattedDateTime = `${formattedDate} ${formattedTime}`;
-            let newMessage = {
-                date: formattedDateTime,
-                message: this.userMessage,
-                status: 'sent'
-            };
-            user.messages.push(newMessage);
-            this.userMessage = '';
-            this.createResponse(user)
+            let messageToCheck = this.userMessage.trim(' ');
+            if (messageToCheck) {
+                let newMessage = {
+                    date: dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                    message: this.userMessage,
+                    status: 'sent'
+                };
+                user.messages.push(newMessage);
+                this.userMessage = '';
+                this.createResponse(user);
+            }
+
         },
         createResponse(user) {
-            user.visible = 'typing';
+            const delay = this.getRndInteger(3, 4) * 1000;
+            if (user.visible === true) {
+                setTimeout(() => {
+                    user.visible = 'online';
+                    setTimeout(() => {
+                        user.visible = 'typing';
+                        setTimeout(() => {
+                            let newMessage = {
+                                date: dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
+                                message: response[this.getRndInteger(0, response.length)],
+                                status: 'received'
+                            };
+                            user.messages.push(newMessage);
+                            user.visible = 'online';
+                            setTimeout(() => {
+                                user.visible = true;
+                            }, delay)
+                        }, delay * 2)
+                    }, delay)
+                }, delay / 2)
+            }
+        },
+        openMenu(message) {
+            setTimeout(() => {
+                this.messageMenuOpen = message;
+            }, 100)
+        },
+        deleteMessage(element) {
+            this.activeUser.messages.splice(this.activeUser.messages.indexOf(element), 1)
+        },
 
-        }
+
+
+
+
+
+
+        getRndInteger(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
 
 
     },
     mounted() {
-        console.log(this.contacts);
+        //console.log(this.contacts);
     },
     computed: {
         activeUser() {
-            let filteredUser = this.contacts.filter(el => {
-                return el.id === this.activeChat
-            });
-            console.log(filteredUser[0]);
-            return filteredUser
+            return (this.contacts.find(el => el.id === this.activeChat));
+        },
+        searchContacts() {
+            const searchLower = this.userSearch.toLowerCase();
+            let filteredArrayOfContacts = this.contacts.filter(el => {
+                return el.name.toLowerCase().includes(searchLower)
+            })
+            return filteredArrayOfContacts;
         }
     }
 }).mount('#app')
+
+
+
+
+console.log(dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));

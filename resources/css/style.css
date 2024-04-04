@@ -78,7 +78,6 @@
 .user-contact {
     height: 70px;
     background-color: var(--contacts-background-inactive);
-    min-width: 300px;
 }
 
 .user-img img {
@@ -96,3 +95,47 @@
     height: calc(100% - 140px);
     background-image: url("../img/mine.jpg");
 }
+
+.chat-box{
+    max-width: 45%;
+}
+
+
+/**menù messaggio**/
+.message-options {
+    display: none;
+    top:5px;
+    right: 5px;
+    width: 30px;
+    height: 30px;
+    z-index: 2;
+    filter: blur(4px); /* Applica un effetto di sfocatura ai bordi */
+  }
+
+  .user-msg .fa-chevron-down{
+    display: none;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    top:5px;
+    right: 5px;
+    z-index: 5;
+  }
+
+  .user-msg:hover .message-options,
+  .user-msg:hover .fa-chevron-down{
+    display: block;
+  }
+
+  .menu-left {
+    right: 5px;
+    top:25px;
+  }
+
+  .menu-right {
+    left: calc(100% - 25px);
+    top:25px;
+  }
+
+
+
