@@ -21,7 +21,7 @@
 
 <body>
   <div id="app" class="py-5">
-    <div class="w-100 h-100" @click="this.messageMenuOpen = ''">
+    <div class="w-100 h-100" @click="reset()">
       <div class="container-xxl h-100 overflow-hidden">
 
         <div class="row h-100 flex-nowrap">
@@ -79,7 +79,7 @@
                     <h6 class="user-name mb-0">{{user.name}}</h6>
                     <span v-if="user.visible===true || user.visible==='online'" class="user-msg-text hype-txt-grey">
                       <i class="fa-solid fa-check-double"
-                        v-if="user.messages[user.messages.length - 1].status ==='sent'"></i>
+                        v-if="user.messages.length>0 && user.messages[user.messages.length - 1].status ==='sent' "></i>
                       {{getLastMessage(user)}}
                     </span>
                     <span v-else-if="user.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
@@ -93,6 +93,7 @@
               </div>
             </div>
           </div>
+          <!-- RIGHT COL -->
           <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start">
             <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
               <div class="user-info d-flex align-items-center">
@@ -103,7 +104,7 @@
                 <div class="d-flex flex-column justify-content-center ">
                   <h6 class="mb-0">{{activeUser.name}}</h6>
                   <p v-if="activeUser.visible===true" class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
-                    {{getLastMessageData(activeUser)}}</p>
+                    {{lastTimeOnline}}</p>
                   <p v-else-if="activeUser.visible==='online'" class="mb-0 small text-primary fw-bold ">Online
                   </p>
                   <p v-else-if="activeUser.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
@@ -114,11 +115,21 @@
               <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
                 <i class="fa-solid fa-magnifying-glass" role="button"></i>
                 <i class="fa-solid fa-paperclip" role="button"></i>
-                <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
+                <div class="position-relative">
+                  <i class="fa-solid fa-ellipsis-vertical" role="button" @click="openFullChatOptionsMenu()"></i>
+                  <ul class="dropdown-menu position-absolute" style="top:30px; right:0px"
+                    :class="fullChatOptionsMenu ? 'show' : ''">
+                    <li class="dropdown-item" role="button">Cancella chat</li>
+                    <li class="dropdown-item text-danger fw-bold" role="button" @click="deleteMessage(element)">Cancella
+                      Contatto</li>
+                  </ul>
+                </div>
+
               </div>
             </div>
-            <div id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
-              <div class="user-msg d-flex m-2"
+            <section id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
+
+              <div class="user-msg d-flex m-2" v-if="activeUser.messages.length > 0"
                 :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
                 v-for="element in activeUser.messages">
                 <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
@@ -154,7 +165,8 @@
                   <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
                 </svg>
               </div>
-            </div>
+
+            </section>
             <div
               class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
               <div class="d-flex align-items-center justify-content-center w-10">
@@ -163,7 +175,8 @@
               <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
                 aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)" v-model="userMessage">
               <div class="d-flex align-items-center justify-content-center w-10">
-                <i class="fa-solid fa-microphone fs-5" role="button"></i>
+                <i v-if="!userMessage" class="fa-solid fa-microphone fs-5" role="button"></i>
+                <i v-else class="fa-regular fa-paper-plane" role="button" @click="sendMessage(activeUser)"></i>
               </div>
             </div>
           </div>

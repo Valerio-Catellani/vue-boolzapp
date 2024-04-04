@@ -122,8 +122,8 @@
     z-index: 5;
   }
 
-  .user-msg:hover .message-options,
-  .user-msg:hover .fa-chevron-down{
+  .chat-box:hover .message-options,
+  .chat-box:hover .fa-chevron-down{
     display: block;
   }
 

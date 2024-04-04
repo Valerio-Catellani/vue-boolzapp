@@ -14,6 +14,7 @@ createApp({
             userMessage: '',
             userSearch: '',
             messageMenuOpen: '',
+            fullChatOptionsMenu: false,
 
         }
     },
@@ -56,7 +57,8 @@ createApp({
                 return el.status === 'received'
             });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
             const lastMessage = sendMessages[sendMessages.length - 1] ?? "";
-            return this.getContractedData(lastMessage.date)
+            user.lastTimeOnline = lastMessage;
+            // return this.getContractedData(lastMessage.date)
         },
         /**
          * gestisce il cambio della chat a destra
@@ -132,8 +134,17 @@ createApp({
                 this.messageMenuOpen = message;
             }, 100)
         },
+        openFullChatOptionsMenu() {
+            setTimeout(() => {
+                this.fullChatOptionsMenu = true;
+            }, 100)
+        },
         deleteMessage(element) {
             this.activeUser.messages.splice(this.activeUser.messages.indexOf(element), 1)
+        },
+        reset() {
+            this.messageMenuOpen = '';
+            this.fullChatOptionsMenu = false;
         },
 
 
@@ -153,6 +164,7 @@ createApp({
     },
     computed: {
         activeUser() {
+            this.reset() //resetto il campo del messaggio
             return (this.contacts.find(el => el.id === this.activeChat));
         },
         searchContacts() {
@@ -161,6 +173,21 @@ createApp({
                 return el.name.toLowerCase().includes(searchLower)
             })
             return filteredArrayOfContacts;
+        },
+        lastTimeOnline() {
+            let aU = this.activeUser;
+            console.log(aU);
+            const sendMessages = aU.messages.filter(el => {
+                return el.status === 'received'
+            });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
+            if (sendMessages.length > 0) {
+                const lastMessageDate = sendMessages[sendMessages.length - 1].date;
+                const formattedDate = this.getContractedData(lastMessageDate);
+                aU.lastOnline = formattedDate
+                return formattedDate
+            }
+            return aU.lastOnline
+            // return formattedDate
         }
     }
 }).mount('#app')

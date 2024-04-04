@@ -4,6 +4,7 @@ export const contacts = [
         name: 'Michele',
         avatar: './img/avatar_1.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -27,6 +28,7 @@ export const contacts = [
         name: 'Fabio',
         avatar: './img/avatar_2.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '20/03/2020 16:30:00',
@@ -50,6 +52,7 @@ export const contacts = [
         name: 'Samuele',
         avatar: './img/avatar_3.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '28/03/2020 10:10:40',
@@ -73,6 +76,7 @@ export const contacts = [
         name: 'Alessandro B.',
         avatar: './img/avatar_4.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -91,6 +95,7 @@ export const contacts = [
         name: 'Alessandro L.',
         avatar: './img/avatar_5.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -109,6 +114,7 @@ export const contacts = [
         name: 'Claudia',
         avatar: './img/avatar_6.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -132,6 +138,7 @@ export const contacts = [
         name: 'Federico',
         avatar: './img/avatar_7.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -150,6 +157,7 @@ export const contacts = [
         name: 'Davide',
         avatar: './img/avatar_8.jpg',
         visible: true,
+        lastOnline: '',
         messages: [
             {
                 date: '10/01/2020 15:30:55',
@@ -194,8 +202,8 @@ Funzionalità
 
 //evitare che l'utente possa inviare un messaggio vuoto o composto solamente da spazi
 
-A) cambiare icona in basso a destra (a fianco all'input per scrivere un nuovo messaggio) finché l'utente sta scrivendo: di default si visualizza l'icona del microfono, quando l'input non è vuoto si visualizza l'icona dell'aeroplano. Quando il messaggio è stato inviato e l'input si svuota, si torna a visualizzare il microfono. 
-B) inviare quindi il messaggio anche cliccando sull'icona dell'aeroplano
+//A) cambiare icona in basso a destra (a fianco all'input per scrivere un nuovo messaggio) finché l'utente sta scrivendo: di default si visualizza l'icona del microfono, quando l'input non è vuoto si visualizza l'icona dell'aeroplano. Quando il messaggio è stato inviato e l'input si svuota, si torna a visualizzare il microfono. 
+//B) inviare quindi il messaggio anche cliccando sull'icona dell'aeroplano
 
 //predisporre una lista di frasi e/o citazioni da utilizzare al posto della risposta "ok:" quando il pc risponde, anziché scrivere "ok", scegliere una frase random dalla lista e utilizzarla come testo del messaggio di risposta del pc
 
@@ -207,8 +215,11 @@ B) inviare quindi il messaggio anche cliccando sull'icona dell'aeroplano
 //accesso alle xx:yy" con l'orario corretto
 
 dare la possibilità all'utente di cancellare tutti i messaggi di un contatto o di cancellare l'intera chat con tutti i suoi dati: cliccando sull'icona con i tre pallini in alto a destra, si apre un dropdown menu in cui sono presenti le voci "Elimina messaggi" ed "Elimina chat"; cliccando su di essi si cancellano rispettivamente tutti i messaggi di quel contatto (quindi rimane la conversazione vuota) oppure l'intera chat comprensiva di tutti i dati del contatto oltre che tutti i suoi messaggi (quindi sparisce il contatto anche dalla lista di sinistra)
+
 dare la possibilità all'utente di aggiungere una nuova conversazione, inserendo in un popup il nome e il link all'icona del nuovo contatto
+
 fare scroll in giù in automatico fino al messaggio più recente, quando viene aggiunto un nuovo messaggio alla conversazione (NB: potrebbe esserci bisogno di utilizzare nextTick: https://vuejs.org/api/general.html#nexttick)
+
 Grafica
 visualizzare un messaggio di benvenuto che invita l'utente a selezionare un contatto dalla lista per visualizzare i suoi messaggi, anziché attivare di default la prima conversazione
 aggiungere una splash page visibile per 1s all'apertura dell'app
