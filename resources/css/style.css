@@ -1,23 +1,30 @@
 
 /*COLORS*/
 :root {
+    --primary: white;
     --contacts-background-inactive: white;
-    --contacts-background-hover: #f3f6f8;
+    --contacts-background: #f3f6f8;
     --contacts-background-active: #d9d9df;
     --notifications-background: #8EDAFC;
     --user-message: #D5F9BA;
     --logo: #009688;
     --typing: rgb(50, 197, 50);
+    --hype-text: #9c9c9d;
+    --hype-text-primary:black;
 }
 
 .hype-txt-grey {
-    color: #9c9c9d;
+    color: var(--hype-text)
 }
-
 .hype-txt-green {
     color: var(--typing)
 }
-
+.hype-text-primary {
+    color: var(--hype-text-primary)
+}
+.hype-bg-primary {
+background-color:var(--primary)
+}
 .notifications-background {
     background-color: var(--notifications-background);
 }
@@ -25,21 +32,34 @@
     color: var(--notifications-background);
 }
 .bar-background {
-    background-color: var(--contacts-background-hover);
+    background-color: var(--contacts-background);
 }
 .message-background-sent {
     background-color: var(--user-message);
 }
 .message-background-received {
-    background-color: white;
+    background-color: white
 }
-
+.shadow-white {
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+  }
+.app-bg-light {
+    background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
+}
+.app-bg-dark{
+    background: linear-gradient(180deg,#009688 20%,  #212529 20%);
+}
+.hype-shadow-light{
+    box-shadow: 10px 10px 12px -8px rgba(0,0,0,0.51);
+}
+.hype-shadow-dark{
+    box-shadow: 10px 10px 12px -8px rgba(255,255,255,0.51);
+}
 
 /*APP*/
 #app {
     height: 100vh;
     width: 100%;
-    background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
 }
 
 .icon50x50{
@@ -66,6 +86,11 @@
 
 .fa-user-plus {
     color: var(--logo);
+}
+
+.form-check-input:checked{
+    background-color: var(--logo) !important;
+    border-color: var(--logo) !important;
 }
 
 #search-bar{
@@ -100,9 +125,17 @@
     height: calc(100% - 140px);
 }
 
-.wa-background {
-    background-image: url("../img/mine.jpg")
+.wa-background-light {
+    background-image: url("../img/mine.jpg");
 }
+
+.wa-background-dark {
+    background-image: url("../img/mineDark.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+
 
 .chat-box{
     max-width: 45%;
@@ -164,7 +197,6 @@ h4{
     height: 500px; 
     top:calc((100% - 500px) / 2);
      left:calc((100% - 500px) / 2); 
-     background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
 }
 
 #custom-modal .btn {

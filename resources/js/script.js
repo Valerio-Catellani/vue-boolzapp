@@ -33,8 +33,8 @@ createApp({
                 progress: 0,
                 opacity: 100,
             },
-            dimension: null
-
+            dimension: null,
+            darkMode: false
         }
     },
     methods: {
@@ -121,13 +121,12 @@ createApp({
                 };
                 user.messages.push(newMessage);
                 this.userInput.userMessage = '';
+                this.openElements.showEmoji = false;
                 this.createResponse(user);
                 this.$nextTick(() => {
                     this.scrollToBottom();
                 });
-
             }
-
         },
         createResponse(user) {
             const delay = this.getRndInteger(3, 4) * 1000;
@@ -165,8 +164,6 @@ createApp({
             setTimeout(() => {
                 this.openElements[el] = !this.openElements[el];
             }, 100)
-
-
         },
         deleteMessage(element) {
             this.activeUser.messages.splice(this.activeUser.messages.indexOf(element), 1)
@@ -175,7 +172,6 @@ createApp({
             user.messages = [];
         },
         deleteContact(user) {
-            console.log(user.id);
             let userToCandelIndex = this.contacts.indexOf(user);
             this.contacts.splice(userToCandelIndex, 1);
             this.activeChat = 0
@@ -206,8 +202,7 @@ createApp({
             chatContainer.scrollTop = chatContainer.scrollHeight;
         },
         onSelectEmoji(emoji) {
-            console.log(emoji)
-            this.messageText += emoji.i;
+            this.userInput.userMessage += emoji.i;
         },
         simulateLoading() {
             this.loadingBar.isLoading = true;
@@ -229,7 +224,16 @@ createApp({
         checkMediaQuery() {
             this.dimension = document.documentElement.clientWidth;
         },
-
+        toggleDarkMode() {
+            console.log(this.darkMode);
+            this.darkMode = !this.darkMode;
+            document.documentElement.style.setProperty('--contacts-background', this.darkMode ? 'black' : '#f3f6f8');
+            document.documentElement.style.setProperty('--primary', this.darkMode ? '#222E35' : '#f3f6f8');
+            document.documentElement.style.setProperty('--hype-text-primary', this.darkMode ? 'white' : 'black');
+            document.documentElement.style.setProperty('--notifications-background', this.darkMode ? '#eaa315' : '#8EDAFC');
+            document.documentElement.style.setProperty('--contacts-background-inactive', this.darkMode ? 'black' : 'white');
+            document.documentElement.style.setProperty('--contacts-background-active', this.darkMode ? '#222E35' : '#d9d9df');
+        },
         getRndInteger(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
@@ -273,7 +277,6 @@ createApp({
             const valuesArray = Object.values(this.userInput.addNewContact);
             return valuesArray.every(el => el !== '')
         },
-
     }
 }).component('Picker', Picker).mount('#app')
 

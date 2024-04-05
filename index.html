@@ -22,43 +22,49 @@
 </head>
 
 <body>
-  <div id="app" class="py-5">
-    <div class="w-100 h-100" @click="reset()">
-      <div class="container-xxl h-100  shadow">
+  <div id="app" class="">
+    <div class="w-100 h-100 py-5" @click="reset()" :data-bs-theme="darkMode? 'dark' : 'light'"
+      :class="darkMode? 'app-bg-dark' : 'app-bg-light'">
+      <div class="container-xxl h-100 " :class="darkMode? 'hype-shadow-dark' : 'hype-shadow-light'">
         <div class="row h-100 flex-nowrap">
-          <!--LEFT COLUMN-->
+          <!------LEFT COLUMN---------->
           <div id="left-col" class="col-4 h-100 px-0" v-if="dimension>992||(dimension<993 && activeChat===0)">
-
+            <!--Main User Banner-->
             <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
               <div class="user-info d-flex align-items-center">
                 <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
                   <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+mainUser.avatar"
                     alt="user profile picture">
                 </div>
-                <h6 class="mb-0">{{mainUser.name}}</h6>
+                <h6 class="mb-0 hype-text-primary">{{mainUser.name}}</h6>
               </div>
               <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+                <div class="form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" style="cursor:pointer"
+                    id="flexSwitchCheckChecked" @click="toggleDarkMode()">
+                  <i class="fa-solid fa-circle-half-stroke"></i>
+                </div>
                 <i class="fa-solid fa-circle-notch" role="button"></i>
                 <i class="fa-solid fa-message" role="button"></i>
                 <i class="fa-solid fa-user-plus" role="button" @click="openElements.showModal = true"></i>
                 <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
               </div>
             </div>
-
+            <!--Notification Banner-->
             <div class="user-banner d-flex align-items-center p-3 notifications-background">
-              <div class="icon50x50 d-flex align-items-center justify-content-center bg-white rounded-circle">
+              <div class="icon50x50 d-flex align-items-center justify-content-center hype-bg-primary rounded-circle">
                 <i class="fa-solid fa-bell-slash fs-5 notifications-color"></i>
               </div>
               <div class="d-flex flex-column justify-content-center ms-2">
                 <h6 class="mb-0 small">Ricevi le notifiche di nuovi messaggi...</h6>
                 <a class="mb-0 small text-decoration-underline hype-txt-grey" href="#">Attiva notifiche desktop</a>
               </div>
-
             </div>
+            <!--Search Bar-->
             <div id="search-bar" class="bar-background  d-flex align-items-center justify-content-center p-3">
               <div class="d-flex w-100" role="search">
                 <span
-                  class="input-group-text rounded-end-0 border-end-0 bg-white w-25 d-flex align-items-center justify-content-center"
+                  class="input-group-text rounded-end-0 border-end-0 hype-bg-primary w-25 d-flex align-items-center justify-content-center"
                   id="basic-addon1">
                   <i class="fa-solid fa-magnifying-glass hype-txt-grey"></i>
                 </span>
@@ -67,7 +73,8 @@
                   v-model="userInput.userSearch">
               </div>
             </div>
-            <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
+            <!--contacts-->
+            <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle hype-bg-primary">
               <div class="p-3 hype-txt-grey fst-italic" v-if="searchContacts.length < 1">Non ci sono contatti,
                 aggiungine qualcuno per iniziare</div>
               <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
@@ -79,7 +86,7 @@
                       :alt="'avatar_'+user.id">
                   </div>
                   <div class="user-msg d-flex flex-column align-self-baseline ms-3">
-                    <h6 class="user-name mb-0">{{user.name}}</h6>
+                    <h6 class="user-name mb-0 hype-text-primary">{{user.name}}</h6>
                     <span v-if="user.visible===true || user.visible==='online' || user.visible==='inactive'"
                       class="user-msg-text hype-txt-grey d-flex align-items-center gap-1">
                       <i class="fa-solid fa-check-double"
@@ -103,11 +110,12 @@
               </div>
             </div>
           </div>
+
           <!-- RIGHT COL -->
           <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start position-relative"
             v-if="dimension>992||(dimension<=993 && activeChat!==0)">
-            <div v-if="activeChat===0"
-              class="h-100 wa-background flex-column d-flex justify-content-center align-items-center">
+            <div v-if="activeChat===0" class="h-100 flex-column d-flex justify-content-center align-items-center"
+              :class="darkMode? 'wa-background-dark' : 'wa-background-light'">
               <i class="fa-brands fa-whatsapp fa-2xl my-3"></i>
               <h4 class="px-5 text-center fst-italic mb-3">"Crea connessioni autentiche, un messaggio alla volta:
                 BoolzApp, il
@@ -121,6 +129,7 @@
 
             </div>
             <div v-else class="h-100">
+              <!--conact info-->
               <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
                 <div class="user-info d-flex align-items-center">
                   <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
@@ -128,7 +137,7 @@
                       alt="user profile picture">
                   </div>
                   <div class="d-flex flex-column justify-content-center ">
-                    <h6 class="mb-0">{{activeUser.name}}</h6>
+                    <h6 class="mb-0 hype-text-primary">{{activeUser.name}}</h6>
                     <p v-if="activeUser.visible===true || activeUser.visible==='inactive'"
                       class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
                       {{lastTimeOnline}}</p>
@@ -159,10 +168,9 @@
 
                 </div>
               </div>
-
-              <section id="chat" ref="chatContainer"
-                class="overflow-y-auto container-fluid d-flex flex-column p-3 wa-background">
-
+              <!---Chat-->
+              <section id="chat" ref="chatContainer" class="overflow-y-auto container-fluid d-flex flex-column p-3"
+                :class="darkMode? 'wa-background-dark' : 'wa-background-light'">
                 <div class="user-msg d-flex m-2" v-if="activeUser.messages.length > 0"
                   :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
                   v-for="element in activeUser.messages">
@@ -200,12 +208,12 @@
                   </svg>
                 </div>
               </section>
-
+              <!--Input-->
               <div
                 class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
                 <div class="d-flex align-items-center justify-content-center w-10">
                   <i class="fa-regular fa-face-smile fs-5" role="button" @click="openElement('showEmoji')"></i>
-                  <Picker @select="onSelectEmoji" class="mia position-absolute"
+                  <Picker @select="onSelectEmoji" class="mia position-absolute hype-bg-primary "
                     :class="{'d-none': !openElements.showEmoji}" />
                 </div>
                 <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
@@ -225,24 +233,25 @@
       <div class="bg-black position-absolute w-100 h-100 position-fixed top-0 start-0 opacity-25"
         :class="{'d-none': !openElements.showModal}"></div>
       <div id="custom-modal"
-        class="bg-danger-subtle position-absolute border-2 rounded-2 shadow d-flex flex-column align-items-center justify-content-center"
-        :class="{'d-none': !openElements.showModal}">
+        class="position-absolute border-2 rounded-2 d-flex flex-column align-items-center justify-content-center"
+        :class="[{'d-none': !openElements.showModal}, darkMode? 'app-bg-dark' : 'app-bg-light', darkMode? 'hype-shadow-dark' : 'hype-shadow-light']">
         <h3 class="mb-5 fs-2 text-white">Aggiungi un Nuovo Contatto</h3>
         <form>
           <div class="mb-3">
             <label for="new-contact-name" class="form-label">Nome</label>
-            <input type="text" class="form-control shadow" id="new-contact-name" placeholder="inserisci il nome"
-              v-model="userInput.addNewContact.name">
+            <input type="text" class="form-control " :class="darkMode? 'hype-shadow-dark' : 'hype-shadow-light'"
+              id="new-contact-name" placeholder="inserisci il nome" v-model="userInput.addNewContact.name">
           </div>
           <div class="mb-3">
             <label for="new-contact-surname" class="form-label ">Cognome</label>
-            <input type="text" class="form-control shadow" id="new-contact-surname" placeholder="inserisci il cognonome"
-              v-model="userInput.addNewContact.surname">
+            <input type="text" class="form-control" :class="darkMode? 'hype-shadow-dark' : 'hype-shadow-light'"
+              id="new-contact-surname" placeholder="inserisci il cognonome" v-model="userInput.addNewContact.surname">
           </div>
           <div class="mb-4">
             <label for="phone-number" class="form-label">Numero di Telefono</label>
-            <input type="number" class="form-control shadow" id="phone-number" aria-describedby="Help"
-              placeholder="inserisci il numero di telefono" v-model="userInput.addNewContact.phone">
+            <input type="number" class="form-control" :class="darkMode? 'hype-shadow-dark' : 'hype-shadow-light'"
+              id="phone-number" aria-describedby="Help" placeholder="inserisci il numero di telefono"
+              v-model="userInput.addNewContact.phone">
             <div id="Help" class="form-text">Non condivideremo le tue informazioni con nessun altro</div>
           </div>
           <div class="d-flex align-items-center justify-content-center gap-5">
