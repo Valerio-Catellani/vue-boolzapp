@@ -6,6 +6,7 @@
     --contacts-background-active: #d9d9df;
     --notifications-background: #8EDAFC;
     --user-message: #D5F9BA;
+    --logo: #009688;
     --typing: rgb(50, 197, 50);
 }
 
@@ -58,10 +59,14 @@
 }
 
 /*LEFT COLUMN*/
+
 #left-col {
     min-width: 300px;
 }
 
+.fa-user-plus {
+    color: var(--logo);
+}
 
 #search-bar{
     height: 55px;
@@ -93,11 +98,26 @@
 
 #chat{
     height: calc(100% - 140px);
-    background-image: url("../img/mine.jpg");
+}
+
+.wa-background {
+    background-image: url("../img/mine.jpg")
 }
 
 .chat-box{
     max-width: 45%;
+}
+
+.fa-whatsapp {
+    font-size: 100px;
+    font-weight: bolder;
+    height: 100px;
+    line-height: 100px;
+    color: var(--logo);
+}
+
+h4{
+    color: var(--logo);
 }
 
 
@@ -137,5 +157,18 @@
     top:25px;
   }
 
+/*Modal*/
 
+#custom-modal {
+    width:500px; 
+    height: 500px; 
+    top:calc((100% - 500px) / 2);
+     left:calc((100% - 500px) / 2); 
+     background: linear-gradient(180deg,#009688 20%, #DADBD3 20%);
+}
+
+#custom-modal .btn {
+    background-color: var(--logo);
+    color: white;
+}
 

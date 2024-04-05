@@ -10,11 +10,17 @@ createApp({
         return {
             contacts: [...contacts],
             mainUser,
-            activeChat: 1,
+            activeChat: 0,
             userMessage: '',
             userSearch: '',
             messageMenuOpen: '',
             fullChatOptionsMenu: false,
+            showModal: false,
+            addNewContact: {
+                name: '',
+                surname: '',
+                phone: ''
+            }
 
         }
     },
@@ -103,12 +109,17 @@ createApp({
                 user.messages.push(newMessage);
                 this.userMessage = '';
                 this.createResponse(user);
+                this.$nextTick(() => {
+                    this.scrollToBottom();
+                });
+
             }
 
         },
         createResponse(user) {
             const delay = this.getRndInteger(3, 4) * 1000;
             if (user.visible === true) {
+                user.visible = 'inactive';
                 setTimeout(() => {
                     user.visible = 'online';
                     setTimeout(() => {
@@ -120,6 +131,9 @@ createApp({
                                 status: 'received'
                             };
                             user.messages.push(newMessage);
+                            this.$nextTick(() => {
+                                this.scrollToBottom();
+                            });
                             user.visible = 'online';
                             setTimeout(() => {
                                 user.visible = true;
@@ -142,9 +156,39 @@ createApp({
         deleteMessage(element) {
             this.activeUser.messages.splice(this.activeUser.messages.indexOf(element), 1)
         },
+        deleteAllMessage(user) {
+            user.messages = [];
+        },
+        deleteContact(user) {
+            console.log(user.id);
+            let userToCandelIndex = this.contacts.indexOf(user);
+            this.contacts.splice(userToCandelIndex, 1);
+            this.activeChat = 0
+
+        },
         reset() {
             this.messageMenuOpen = '';
             this.fullChatOptionsMenu = false;
+        },
+        addContact() {
+            const newID = this.contacts.map(el => el.id).sort((a, b) => b - a)[0] + 1 ?? 1;
+            const newC = {
+                id: newID,
+                name: this.addNewContact.name + this.addNewContact.surname,
+                avatar: `./img/avatar_${this.getRndInteger(1, 8)}.jpg`,
+                visible: true,
+                lastOnline: '16:00',
+                messages: []
+            };
+            this.contacts.push(newC);
+            this.showModal = false
+        },
+        scrollToBottom() {
+            // Trova l'elemento chatContainer utilizzando il riferimento
+            const chatContainer = this.$refs.chatContainer;
+
+            // Sposta lo scroll verso il basso
+            chatContainer.scrollTop = chatContainer.scrollHeight;
         },
 
 
@@ -176,7 +220,6 @@ createApp({
         },
         lastTimeOnline() {
             let aU = this.activeUser;
-            console.log(aU);
             const sendMessages = aU.messages.filter(el => {
                 return el.status === 'received'
             });//filtro l'array dei messaggi in modo da otttenere solo quelli che mi ha inviato l'utente
@@ -188,6 +231,10 @@ createApp({
             }
             return aU.lastOnline
             // return formattedDate
+        },
+        checkInput() {
+            const valuesArray = Object.values(this.addNewContact);
+            return valuesArray.every(el => el !== '')
         }
     }
 }).mount('#app')
@@ -195,4 +242,4 @@ createApp({
 
 
 
-console.log(dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));
+//console.log(dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'));

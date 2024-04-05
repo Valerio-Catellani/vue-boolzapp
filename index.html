@@ -22,7 +22,7 @@
 <body>
   <div id="app" class="py-5">
     <div class="w-100 h-100" @click="reset()">
-      <div class="container-xxl h-100 overflow-hidden">
+      <div class="container-xxl h-100  shadow">
 
         <div class="row h-100 flex-nowrap">
           <div id="left-col" class="col-4 h-100 px-0">
@@ -38,6 +38,7 @@
               <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
                 <i class="fa-solid fa-circle-notch" role="button"></i>
                 <i class="fa-solid fa-message" role="button"></i>
+                <i class="fa-solid fa-user-plus" role="button" @click="showModal = true"></i>
                 <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
               </div>
             </div>
@@ -47,7 +48,7 @@
                 <i class="fa-solid fa-bell-slash fs-5 notifications-color"></i>
               </div>
               <div class="d-flex flex-column justify-content-center ms-2">
-                <h6 class="mb-0 small">Ricevi le notifiche di nuovi messaggi</h6>
+                <h6 class="mb-0 small">Ricevi le notifiche di nuovi messaggi...</h6>
                 <a class="mb-0 small text-decoration-underline hype-txt-grey" href="#">Attiva notifiche desktop</a>
               </div>
 
@@ -77,10 +78,17 @@
                   </div>
                   <div class="user-msg d-flex flex-column align-self-baseline ms-3">
                     <h6 class="user-name mb-0">{{user.name}}</h6>
-                    <span v-if="user.visible===true || user.visible==='online'" class="user-msg-text hype-txt-grey">
+                    <span v-if="user.visible===true || user.visible==='online' || user.visible==='inactive'"
+                      class="user-msg-text hype-txt-grey d-flex align-items-center gap-1">
                       <i class="fa-solid fa-check-double"
+                        :class="{'text-primary': user.visible === 'online' || user.visible === 'typing'}"
                         v-if="user.messages.length>0 && user.messages[user.messages.length - 1].status ==='sent' "></i>
-                      {{getLastMessage(user)}}
+                      <div v-if="user.messages.length===0">
+                        <span class="fst-italic hype-txt-grey">Non ci sono messaggi</span>
+                      </div>
+                      <div v-else>
+                        {{getLastMessage(user)}}
+                      </div>
                     </span>
                     <span v-else-if="user.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
                       <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
@@ -95,93 +103,152 @@
           </div>
           <!-- RIGHT COL -->
           <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start">
-            <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
-              <div class="user-info d-flex align-items-center">
-                <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
-                  <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser.avatar"
-                    alt="user profile picture">
+            <div v-if="activeChat===0"
+              class="h-100 wa-background flex-column d-flex justify-content-center align-items-center">
+              <i class="fa-brands fa-whatsapp fa-2xl my-3"></i>
+              <h4 class="px-5 text-center fst-italic mb-3">"Crea connessioni autentiche, un messaggio alla volta:
+                WhatApp, il
+                tuo
+                compagno di
+                comunicazione
+                quotidiana!"</h4>
+              <p class="px-5 text-center fst-italic hype-txt-grey">Clicca su un contatto per iniziare una conversazione
+                o aggiungine qualcuno
+              </p>
+
+            </div>
+            <div v-else class="h-100">
+              <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
+                <div class="user-info d-flex align-items-center">
+                  <div class="icon50x50 d-flex align-items-center justify-content-center me-2">
+                    <img class="img-fluid rounded-circle overflow-hidden" :src="'resources/'+activeUser.avatar"
+                      alt="user profile picture">
+                  </div>
+                  <div class="d-flex flex-column justify-content-center ">
+                    <h6 class="mb-0">{{activeUser.name}}</h6>
+                    <p v-if="activeUser.visible===true || activeUser.visible==='inactive'"
+                      class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
+                      {{lastTimeOnline}}</p>
+                    <p v-else-if="activeUser.visible==='online'" class="mb-0 small text-primary fw-bold ">Online
+                    </p>
+                    <p v-else-if="activeUser.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta
+                      scrivendo
+                      <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
+                    </p>
+                  </div>
                 </div>
-                <div class="d-flex flex-column justify-content-center ">
-                  <h6 class="mb-0">{{activeUser.name}}</h6>
-                  <p v-if="activeUser.visible===true" class="mb-0 small hype-txt-grey">Ultimo accesso oggi alle
-                    {{lastTimeOnline}}</p>
-                  <p v-else-if="activeUser.visible==='online'" class="mb-0 small text-primary fw-bold ">Online
-                  </p>
-                  <p v-else-if="activeUser.visible==='typing'" class="mb-0 small hype-txt-green fw-bold ">Sta scrivendo
-                    <i class="fa-solid fa-ellipsis fa-bounce fa-xs"></i>
-                  </p>
+                <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+                  <i class="fa-solid fa-magnifying-glass" role="button"></i>
+                  <i class="fa-solid fa-paperclip" role="button"></i>
+                  <div class="position-relative">
+                    <i class="fa-solid fa-ellipsis-vertical" role="button" @click="openFullChatOptionsMenu()"></i>
+                    <ul class="dropdown-menu position-absolute" style="top:30px; right:0px"
+                      :class="fullChatOptionsMenu ? 'show' : ''">
+                      <li class="dropdown-item" role="button" @click="deleteAllMessage(activeUser)">Cancella chat</li>
+                      <li class="dropdown-item text-danger fw-bold" role="button" @click="deleteContact(activeUser)">
+                        Cancella
+                        Contatto</li>
+                    </ul>
+                  </div>
+
                 </div>
               </div>
-              <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
-                <i class="fa-solid fa-magnifying-glass" role="button"></i>
-                <i class="fa-solid fa-paperclip" role="button"></i>
-                <div class="position-relative">
-                  <i class="fa-solid fa-ellipsis-vertical" role="button" @click="openFullChatOptionsMenu()"></i>
-                  <ul class="dropdown-menu position-absolute" style="top:30px; right:0px"
-                    :class="fullChatOptionsMenu ? 'show' : ''">
-                    <li class="dropdown-item" role="button">Cancella chat</li>
-                    <li class="dropdown-item text-danger fw-bold" role="button" @click="deleteMessage(element)">Cancella
-                      Contatto</li>
-                  </ul>
-                </div>
 
+              <section id="chat" ref="chatContainer"
+                class="overflow-y-auto container-fluid d-flex flex-column p-3 wa-background">
+
+                <div class="user-msg d-flex m-2" v-if="activeUser.messages.length > 0"
+                  :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
+                  v-for="element in activeUser.messages">
+                  <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class=""
+                    version="1.1" x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='received'">
+                    <title>tail-in</title>
+                    <path opacity="0.13" fill="#0000000"
+                      d="M1.533,3.568L8,12.193V1H2.812 C1.042,1,0.474,2.156,1.533,3.568z"></path>
+                    <path fill="white" d="M1.533,2.568L8,11.193V0L2.812,0C1.042,0,0.474,1.156,1.533,2.568z"></path>
+                  </svg>
+                  <div class="chat-box border-dark d-flex flex-column rounded-bottom-2 px-2 pt-2 position-relative"
+                    :class="['message-background-'+element.status, element.status==='sent'? 'rounded-start-2' : 'rounded-end-2']">
+                    <span class="">{{element.message}}
+                    </span>
+                    <div class="message-options position-absolute p-2" :class="'message-background-'+element.status"
+                      disabled></div>
+                    <i class="fa-solid fa-chevron-down position-absolute p-1" role="button"
+                      @click="openMenu(element)"></i>
+                    <ul v-show="element.status==='sent'" class="dropdown-menu position-absolute"
+                      :class="[element.status==='sent'? 'menu-left' : 'menu-right', {'show': element===messageMenuOpen}]">
+                      <li class="dropdown-item" role="button">Informazioni messaggio</li>
+                      <li class="dropdown-item" role="button" @click="deleteMessage(element)">Cancella messaggio</li>
+                    </ul>
+                    <span class="small hype-txt-grey d-flex align-items-end justify-content-end">
+                      {{getContractedData(element.date)}}
+                      <i class="fa-solid fa-check-double pb-1 ps-1" v-if="element.status ==='sent'"
+                        :class="[changeColor(activeUser, element), {'text-primary': activeUser.visible === 'online' || activeUser.visible === 'typing'}]"></i>
+                    </span>
+                  </div>
+                  <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class=""
+                    version="1.1" x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='sent'">
+                    <title>tail-out</title>
+                    <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
+                    <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
+                  </svg>
+                </div>
+              </section>
+
+              <div
+                class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
+                <div class="d-flex align-items-center justify-content-center w-10">
+                  <i class="fa-regular fa-face-smile fs-5" role="button"></i>
+                </div>
+                <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
+                  aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)" v-model="userMessage">
+                <div class="d-flex align-items-center justify-content-center w-10">
+                  <i v-if="!userMessage" class="fa-solid fa-microphone fs-5" role="button"></i>
+                  <i v-else class="fa-regular fa-paper-plane" role="button" @click="sendMessage(activeUser)"></i>
+                </div>
               </div>
             </div>
-            <section id="chat" class="overflow-y-auto container-fluid d-flex flex-column p-3">
-
-              <div class="user-msg d-flex m-2" v-if="activeUser.messages.length > 0"
-                :class="element.status==='sent'? 'justify-content-end' : 'justify-content-start'"
-                v-for="element in activeUser.messages">
-                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
-                  x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='received'">
-                  <title>tail-in</title>
-                  <path opacity="0.13" fill="#0000000"
-                    d="M1.533,3.568L8,12.193V1H2.812 C1.042,1,0.474,2.156,1.533,3.568z"></path>
-                  <path fill="white" d="M1.533,2.568L8,11.193V0L2.812,0C1.042,0,0.474,1.156,1.533,2.568z"></path>
-                </svg>
-                <div class="chat-box border-dark d-flex flex-column rounded-bottom-2 px-2 pt-2 position-relative"
-                  :class="['message-background-'+element.status, element.status==='sent'? 'rounded-start-2' : 'rounded-end-2']">
-                  <span class="">{{element.message}}
-                  </span>
-                  <div class="message-options position-absolute p-2" :class="'message-background-'+element.status"
-                    disabled></div>
-                  <i class="fa-solid fa-chevron-down position-absolute p-1" role="button"
-                    @click="openMenu(element)"></i>
-                  <ul class="dropdown-menu position-absolute"
-                    :class="[element.status==='sent'? 'menu-left' : 'menu-right', {'show': element===messageMenuOpen}]">
-                    <li class="dropdown-item" role="button">Informazioni messaggio</li>
-                    <li class="dropdown-item" role="button" @click="deleteMessage(element)">Cancella messaggio</li>
-                  </ul>
-                  <span class="small hype-txt-grey d-flex align-items-end justify-content-end">
-                    {{getContractedData(element.date)}}
-                    <i class="fa-solid fa-check-double pb-1 ps-1" v-if="element.status ==='sent'"
-                      :class="[changeColor(activeUser, element), {'text-primary': activeUser.visible !== true}]"></i>
-                  </span>
-                </div>
-                <svg viewBox="0 0 8 13" height="13" width="8" preserveAspectRatio="xMidYMid meet" class="" version="1.1"
-                  x="0px" y="0px" enable-background="new 0 0 8 13" v-if="element.status==='sent'">
-                  <title>tail-out</title>
-                  <path opacity="0.13" d="M5.188,1H0v11.193l6.467-8.625 C7.526,2.156,6.958,1,5.188,1z"></path>
-                  <path fill="#D5F9BA" d="M5.188,0H0v11.193l6.467-8.625C7.526,1.156,6.958,0,5.188,0z"></path>
-                </svg>
-              </div>
-
-            </section>
-            <div
-              class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
-              <div class="d-flex align-items-center justify-content-center w-10">
-                <i class="fa-regular fa-face-smile fs-5" role="button"></i>
-              </div>
-              <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
-                aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)" v-model="userMessage">
-              <div class="d-flex align-items-center justify-content-center w-10">
-                <i v-if="!userMessage" class="fa-solid fa-microphone fs-5" role="button"></i>
-                <i v-else class="fa-regular fa-paper-plane" role="button" @click="sendMessage(activeUser)"></i>
-              </div>
-            </div>
-          </div>
+          </div><!--end-->
         </div>
       </div>
+
+      <!-- Modal -->
+      <div class="bg-black position-absolute w-100 h-100 position-fixed top-0 start-0 opacity-25"
+        :class="{'d-none': !showModal}"></div>
+      <div id="custom-modal"
+        class="bg-danger-subtle position-absolute border-2 rounded-2 shadow d-flex flex-column align-items-center justify-content-center"
+        :class="{'d-none': !showModal}">
+        <h3 class="mb-5 fs-2 text-white">Aggiungi un Nuovo Contatto</h3>
+        <form>
+          <div class="mb-3">
+            <label for="new-contact-name" class="form-label">Nome</label>
+            <input type="text" class="form-control shadow" id="new-contact-name" placeholder="inserisci il nome"
+              v-model="addNewContact.name">
+          </div>
+          <div class="mb-3">
+            <label for="new-contact-surname" class="form-label ">Cognome</label>
+            <input type="text" class="form-control shadow" id="new-contact-surname" placeholder="inserisci il cognonome"
+              v-model="addNewContact.surname">
+          </div>
+          <div class="mb-4">
+            <label for="phone-number" class="form-label">Numero di Telefono</label>
+            <input type="number" class="form-control shadow" id="phone-number" aria-describedby="Help"
+              placeholder="inserisci il numero di telefono" v-model="addNewContact.phone">
+            <div id="Help" class="form-text">Non condivideremo le tue informazioni con nessun altro</div>
+          </div>
+          <div class="d-flex align-items-center justify-content-center gap-5">
+            <button class="btn btn-lg border-0" :disabled="!checkInput" @click.prevent="addContact()">Aggiungi
+              Contatto</button>
+            <button class="btn btn-lg bg-danger" @click.prevent="showModal = false">
+              Annulla
+            </button>
+          </div>
+
+        </form>
+      </div>
+
+
+
     </div>
   </div>
 
