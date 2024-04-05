@@ -13,6 +13,8 @@
   <link rel="stylesheet" href="resources/css/style.css">
   <link rel="stylesheet" href="resources/css/animation.css">
   <link rel="stylesheet" href="resources/css/media-query.css">
+  <link rel="stylesheet" href="resources/css/styleEmoticon.css">
+  <script src="resources/js/emoji-picker.js" type="module"></script>
   <script src="https://cdn.jsdelivr.net/npm/luxon@3.4.4/build/global/luxon.min.js"></script>
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script src="resources/js/script.js" type="module"></script>
@@ -23,9 +25,9 @@
   <div id="app" class="py-5">
     <div class="w-100 h-100" @click="reset()">
       <div class="container-xxl h-100  shadow">
-
         <div class="row h-100 flex-nowrap">
-          <div id="left-col" class="col-4 h-100 px-0">
+          <!--LEFT COLUMN-->
+          <div id="left-col" class="col-4 h-100 px-0" v-if="dimension>992||(dimension<993 && activeChat===0)">
 
             <div class="user-banner bar-background d-flex justify-content-between align-items-center px-3 py-2">
               <div class="user-info d-flex align-items-center">
@@ -38,7 +40,7 @@
               <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
                 <i class="fa-solid fa-circle-notch" role="button"></i>
                 <i class="fa-solid fa-message" role="button"></i>
-                <i class="fa-solid fa-user-plus" role="button" @click="showModal = true"></i>
+                <i class="fa-solid fa-user-plus" role="button" @click="openElements.showModal = true"></i>
                 <i class="fa-solid fa-ellipsis-vertical" role="button"></i>
               </div>
             </div>
@@ -62,12 +64,12 @@
                 </span>
                 <input type="Search" class="form-control me-2 rounded-start-0 hype-txt-grey small"
                   placeholder="Cerca o Inizia una nuova chat" aria-label="Search" aria-describedby="basic-addon1"
-                  v-model="userSearch">
+                  v-model="userInput.userSearch">
               </div>
             </div>
             <div id="contacts" class="overflow-y-scroll border-top border-dark-subtle bg-white">
-              <div class="p-3 hype-txt-grey fst-italic" v-if="searchContacts.length < 1">Non ci sono contatti che
-                rispettano i parametri di ricerca</div>
+              <div class="p-3 hype-txt-grey fst-italic" v-if="searchContacts.length < 1">Non ci sono contatti,
+                aggiungine qualcuno per iniziare</div>
               <div class="user-contact d-flex justify-content-between border-bottom border-dark-subtle p-2"
                 v-for="user in searchContacts" :key="user.id" @click="changeChat(user.id)"
                 :class="activeChat === user.id ? 'active' : ''">
@@ -102,12 +104,13 @@
             </div>
           </div>
           <!-- RIGHT COL -->
-          <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start">
+          <div id="right-col" class="col-8 h-100 px-0 border-dark-subtle border-start position-relative"
+            v-if="dimension>992||(dimension<=993 && activeChat!==0)">
             <div v-if="activeChat===0"
               class="h-100 wa-background flex-column d-flex justify-content-center align-items-center">
               <i class="fa-brands fa-whatsapp fa-2xl my-3"></i>
               <h4 class="px-5 text-center fst-italic mb-3">"Crea connessioni autentiche, un messaggio alla volta:
-                WhatApp, il
+                BoolzApp, il
                 tuo
                 compagno di
                 comunicazione
@@ -138,12 +141,15 @@
                   </div>
                 </div>
                 <div class="user-icons hype-txt-grey fs-5 d-flex align-items-center gap-3">
+                  <i class="fa-solid fa-arrow-left fa-xl" style="color: #009688;" v-if="dimension<992"
+                    @click="activeChat=0"></i>
                   <i class="fa-solid fa-magnifying-glass" role="button"></i>
                   <i class="fa-solid fa-paperclip" role="button"></i>
                   <div class="position-relative">
-                    <i class="fa-solid fa-ellipsis-vertical" role="button" @click="openFullChatOptionsMenu()"></i>
+                    <i class="fa-solid fa-ellipsis-vertical" role="button"
+                      @click="openElement('fullChatOptionsMenu')"></i>
                     <ul class="dropdown-menu position-absolute" style="top:30px; right:0px"
-                      :class="fullChatOptionsMenu ? 'show' : ''">
+                      :class="openElements.fullChatOptionsMenu ? 'show' : ''">
                       <li class="dropdown-item" role="button" @click="deleteAllMessage(activeUser)">Cancella chat</li>
                       <li class="dropdown-item text-danger fw-bold" role="button" @click="deleteContact(activeUser)">
                         Cancella
@@ -176,7 +182,7 @@
                     <i class="fa-solid fa-chevron-down position-absolute p-1" role="button"
                       @click="openMenu(element)"></i>
                     <ul v-show="element.status==='sent'" class="dropdown-menu position-absolute"
-                      :class="[element.status==='sent'? 'menu-left' : 'menu-right', {'show': element===messageMenuOpen}]">
+                      :class="[element.status==='sent'? 'menu-left' : 'menu-right', {'show': element===openElements.messageMenuOpen}]">
                       <li class="dropdown-item" role="button">Informazioni messaggio</li>
                       <li class="dropdown-item" role="button" @click="deleteMessage(element)">Cancella messaggio</li>
                     </ul>
@@ -198,12 +204,15 @@
               <div
                 class="user-banner bar-background d-flex justify-content-around align-items-center px-2  hype-txt-grey">
                 <div class="d-flex align-items-center justify-content-center w-10">
-                  <i class="fa-regular fa-face-smile fs-5" role="button"></i>
+                  <i class="fa-regular fa-face-smile fs-5" role="button" @click="openElement('showEmoji')"></i>
+                  <Picker @select="onSelectEmoji" class="mia position-absolute"
+                    :class="{'d-none': !openElements.showEmoji}" />
                 </div>
                 <input class="form-control form-control w-80" type="text" placeholder="Scrivi un messaggio..."
-                  aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)" v-model="userMessage">
+                  aria-label=".form-control-lg example" @keyup.enter="sendMessage(activeUser)"
+                  v-model="userInput.userMessage">
                 <div class="d-flex align-items-center justify-content-center w-10">
-                  <i v-if="!userMessage" class="fa-solid fa-microphone fs-5" role="button"></i>
+                  <i v-if="!userInput.userMessage" class="fa-solid fa-microphone fs-5" role="button"></i>
                   <i v-else class="fa-regular fa-paper-plane" role="button" @click="sendMessage(activeUser)"></i>
                 </div>
               </div>
@@ -214,37 +223,51 @@
 
       <!-- Modal -->
       <div class="bg-black position-absolute w-100 h-100 position-fixed top-0 start-0 opacity-25"
-        :class="{'d-none': !showModal}"></div>
+        :class="{'d-none': !openElements.showModal}"></div>
       <div id="custom-modal"
         class="bg-danger-subtle position-absolute border-2 rounded-2 shadow d-flex flex-column align-items-center justify-content-center"
-        :class="{'d-none': !showModal}">
+        :class="{'d-none': !openElements.showModal}">
         <h3 class="mb-5 fs-2 text-white">Aggiungi un Nuovo Contatto</h3>
         <form>
           <div class="mb-3">
             <label for="new-contact-name" class="form-label">Nome</label>
             <input type="text" class="form-control shadow" id="new-contact-name" placeholder="inserisci il nome"
-              v-model="addNewContact.name">
+              v-model="userInput.addNewContact.name">
           </div>
           <div class="mb-3">
             <label for="new-contact-surname" class="form-label ">Cognome</label>
             <input type="text" class="form-control shadow" id="new-contact-surname" placeholder="inserisci il cognonome"
-              v-model="addNewContact.surname">
+              v-model="userInput.addNewContact.surname">
           </div>
           <div class="mb-4">
             <label for="phone-number" class="form-label">Numero di Telefono</label>
             <input type="number" class="form-control shadow" id="phone-number" aria-describedby="Help"
-              placeholder="inserisci il numero di telefono" v-model="addNewContact.phone">
+              placeholder="inserisci il numero di telefono" v-model="userInput.addNewContact.phone">
             <div id="Help" class="form-text">Non condivideremo le tue informazioni con nessun altro</div>
           </div>
           <div class="d-flex align-items-center justify-content-center gap-5">
             <button class="btn btn-lg border-0" :disabled="!checkInput" @click.prevent="addContact()">Aggiungi
               Contatto</button>
-            <button class="btn btn-lg bg-danger" @click.prevent="showModal = false">
+            <button class="btn btn-lg bg-danger" @click.prevent="openElements.showModal = false">
               Annulla
             </button>
           </div>
-
         </form>
+      </div>
+
+      <!-- splash page -->
+      <div v-if="loadingBar.isLoading"
+        class="bg-black position-absolute w-100 h-100 position-fixed top-0 start-0 d-flex justify-content-center align-items-center"
+        :style="{ opacity: `${loadingBar.opacity}%` }">
+        <div v-if="loadingBar.isLoading" class="loading-bar w-50">
+          <div class="bar" :style="{ width: `${loadingBar.progress}%` }"></div>
+        </div>
+      </div>
+      <div v-if="loadingBar.isLoading"
+        class="logo-container  position-absolute d-flex flex-column justify-content-center align-items-center gap-3"
+        :style="{ opacity: `${loadingBar.opacity}%` }">
+        <i class="logo fa-brands fa-whatsapp fa-2xl"></i>
+        <h1 class="">BoolzApp</h1>
       </div>
 
 

@@ -1,5 +1,6 @@
 
 import { contacts, mainUser, response } from "./data.js";
+import Picker from './emoji-picker.js';
 
 
 const { createApp } = Vue;
@@ -8,19 +9,31 @@ const dateTime = luxon.DateTime;
 createApp({
     data() {
         return {
-            contacts: [...contacts],
-            mainUser,
+            contacts: [...contacts], //ottengo l'array dei contatti
+            mainUser, //mainUser
             activeChat: 0,
-            userMessage: '',
-            userSearch: '',
-            messageMenuOpen: '',
-            fullChatOptionsMenu: false,
-            showModal: false,
-            addNewContact: {
-                name: '',
-                surname: '',
-                phone: ''
-            }
+            openElements: {
+                messageMenuOpen: '',
+                fullChatOptionsMenu: false,
+                showModal: false,
+                showEmoji: false,
+            },
+            userInput: {
+                userMessage: '',
+                userSearch: '',
+                addNewContact: {
+                    name: '',
+                    surname: '',
+                    phone: ''
+                },
+                emoji: '',
+            },
+            loadingBar: {
+                isLoading: true, // Stato del caricamento
+                progress: 0,
+                opacity: 100,
+            },
+            dimension: null
 
         }
     },
@@ -99,15 +112,15 @@ createApp({
          * @param {*} user 
          */
         sendMessage(user) {
-            let messageToCheck = this.userMessage.trim(' ');
+            let messageToCheck = this.userInput.userMessage.trim(' ');
             if (messageToCheck) {
                 let newMessage = {
                     date: dateTime.now().setLocale('it').toFormat('dd/MM/yyyy HH:mm:ss'),
-                    message: this.userMessage,
+                    message: this.userInput.userMessage,
                     status: 'sent'
                 };
                 user.messages.push(newMessage);
-                this.userMessage = '';
+                this.userInput.userMessage = '';
                 this.createResponse(user);
                 this.$nextTick(() => {
                     this.scrollToBottom();
@@ -145,13 +158,15 @@ createApp({
         },
         openMenu(message) {
             setTimeout(() => {
-                this.messageMenuOpen = message;
+                this.openElements.messageMenuOpen = message;
             }, 100)
         },
-        openFullChatOptionsMenu() {
+        openElement(el) {
             setTimeout(() => {
-                this.fullChatOptionsMenu = true;
+                this.openElements[el] = !this.openElements[el];
             }, 100)
+
+
         },
         deleteMessage(element) {
             this.activeUser.messages.splice(this.activeUser.messages.indexOf(element), 1)
@@ -167,21 +182,21 @@ createApp({
 
         },
         reset() {
-            this.messageMenuOpen = '';
-            this.fullChatOptionsMenu = false;
+            this.openElements.messageMenuOpen = '';
+            this.openElements.fullChatOptionsMenu = false;
         },
         addContact() {
             const newID = this.contacts.map(el => el.id).sort((a, b) => b - a)[0] + 1 ?? 1;
             const newC = {
                 id: newID,
-                name: this.addNewContact.name + this.addNewContact.surname,
+                name: this.userInput.addNewContact.name + ' ' + this.userInput.addNewContact.surname,
                 avatar: `./img/avatar_${this.getRndInteger(1, 8)}.jpg`,
                 visible: true,
                 lastOnline: '16:00',
                 messages: []
             };
             this.contacts.push(newC);
-            this.showModal = false
+            this.openElements.showModal = false
         },
         scrollToBottom() {
             // Trova l'elemento chatContainer utilizzando il riferimento
@@ -190,29 +205,51 @@ createApp({
             // Sposta lo scroll verso il basso
             chatContainer.scrollTop = chatContainer.scrollHeight;
         },
-
-
-
-
-
-
+        onSelectEmoji(emoji) {
+            console.log(emoji)
+            this.messageText += emoji.i;
+        },
+        simulateLoading() {
+            this.loadingBar.isLoading = true;
+            let interval = setInterval(() => {
+                this.loadingBar.progress += 10;
+                if (this.loadingBar.progress >= 100) {
+                    clearInterval(interval);
+                    let pageInterval = setInterval(() => {
+                        this.loadingBar.opacity -= 10;
+                        if (this.loadingBar.opacity <= 0) {
+                            clearInterval(pageInterval);
+                            this.loadingBar.isLoading = false;
+                            this.loadingBar.progress = 0;
+                        }
+                    }, 30)
+                }
+            }, 150);
+        },
+        checkMediaQuery() {
+            this.dimension = document.documentElement.clientWidth;
+        },
 
         getRndInteger(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
         },
-
-
     },
     mounted() {
-        //console.log(this.contacts);
+        this.checkMediaQuery();
+        window.addEventListener('resize', this.checkMediaQuery);
     },
+    created() {
+        this.simulateLoading();
+    },
+
     computed: {
         activeUser() {
-            this.reset() //resetto il campo del messaggio
+            this.reset(); //resetto il campo del messaggio
+            this.openElements.showEmoji = false;
             return (this.contacts.find(el => el.id === this.activeChat));
         },
         searchContacts() {
-            const searchLower = this.userSearch.toLowerCase();
+            const searchLower = this.userInput.userSearch.toLowerCase();
             let filteredArrayOfContacts = this.contacts.filter(el => {
                 return el.name.toLowerCase().includes(searchLower)
             })
@@ -233,11 +270,12 @@ createApp({
             // return formattedDate
         },
         checkInput() {
-            const valuesArray = Object.values(this.addNewContact);
+            const valuesArray = Object.values(this.userInput.addNewContact);
             return valuesArray.every(el => el !== '')
-        }
+        },
+
     }
-}).mount('#app')
+}).component('Picker', Picker).mount('#app')
 
 
 
